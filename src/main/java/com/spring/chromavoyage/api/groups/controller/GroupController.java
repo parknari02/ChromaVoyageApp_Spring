@@ -1,6 +1,8 @@
 package com.spring.chromavoyage.api.groups.controller;
 
 import com.spring.chromavoyage.api.groups.entity.Group;
+import com.spring.chromavoyage.api.groups.entity.GroupMember;
+import com.spring.chromavoyage.api.groups.repository.GroupMemberRepository;
 import com.spring.chromavoyage.api.groups.repository.GroupRepository;
 import com.spring.chromavoyage.api.groups.service.GroupService;
 import com.spring.chromavoyage.api.groups.service.UserInvitationException;
@@ -23,6 +25,9 @@ public class GroupController {
 
     @Autowired // GroupRepository를 주입받을 수 있도록 추가
     private GroupRepository groupRepository;
+
+    @Autowired
+    private GroupMemberRepository groupMemberRepository;
 
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createGroup(@RequestBody CreateGroupRequest request) {
@@ -99,6 +104,34 @@ public class GroupController {
 
             // 성공 응답
             return ResponseEntity.status(HttpStatus.OK).body(response("200", "Successfully Saved"));
+        } catch (UserInvitationException e) {
+            // 예외 처리 - 해당 예외에 따라 적절한 응답을 반환하도록 구현
+            String responseCode = e.getResponseCode();
+            String description = e.getDescription();
+            return ResponseEntity.status(e.getHttpStatus()).body(response(responseCode, description));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response("500", "Internal Server Error"));
+        }
+    }
+
+    @DeleteMapping("/{group_id}")
+    public ResponseEntity<Map<String, Object>> deleteGroup(
+            @PathVariable("group_id") Long groupId) {
+        try {
+            // 그룹이 존재하는지 확인합니다.
+            Group group = groupRepository.findById(groupId)
+                    .orElseThrow(() -> new UserInvitationException("404", "Group not found"));
+
+            // "groupmember" 테이블에서 해당 그룹과 관련된 데이터를 먼저 삭제합니다.
+            List<GroupMember> groupMembers = groupMemberRepository.findByGroup(group);
+            groupMemberRepository.deleteAll(groupMembers);
+
+            // 그룹을 삭제합니다.
+            groupRepository.delete(group);
+
+            // 성공 응답
+            return ResponseEntity.status(HttpStatus.OK).body(response("200", "Group Deleted Successfully"));
         } catch (UserInvitationException e) {
             // 예외 처리 - 해당 예외에 따라 적절한 응답을 반환하도록 구현
             String responseCode = e.getResponseCode();
