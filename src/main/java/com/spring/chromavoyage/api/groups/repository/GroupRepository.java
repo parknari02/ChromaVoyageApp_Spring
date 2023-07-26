@@ -4,5 +4,5 @@ import com.spring.chromavoyage.api.groups.entity.Group;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
-    Group findByGroupName(String groupName);
+    boolean existsByGroupName(String groupName);
 }
