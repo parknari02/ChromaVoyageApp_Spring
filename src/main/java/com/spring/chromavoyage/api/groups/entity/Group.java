@@ -19,6 +19,7 @@ public class Group {
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
+    @Column(name = "pin")
     private Boolean pin;
 
     // Getter와 Setter
@@ -66,52 +67,6 @@ public class Group {
     }
 }
 
-//@Entity
-//public class Group {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "group_id")
-//    private Long groupId;
-//
-//    @Column(name = "group_name")
-//    private String groupName;
-//
-//    @Column(name = "created_date")
-//    private LocalDateTime createdDate;
-//
-//    private Boolean pin;
-//
-//    public Long getGroupId() {
-//        return groupId;
-//    }
-//
-//    public void setGroupId(Long groupId) {
-//        this.groupId = groupId;
-//    }
-//
-//    public String getGroupName() {
-//        return groupName;
-//    }
-//
-//    public void setGroupName(String groupName) {
-//        this.groupName = groupName;
-//    }
-//
-//    public LocalDateTime getCreatedDate() {
-//        return createdDate;
-//    }
-//
-//    public void setCreatedDate(LocalDateTime createdDate) {
-//        this.createdDate = createdDate;
-//    }
-//
-//    public Boolean getPin() {
-//        return pin;
-//    }
-//
-//    public void setPin(Boolean pin) {
-//        this.pin = pin;
-//    }
-//}
+
 
 

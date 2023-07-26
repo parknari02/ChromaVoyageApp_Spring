@@ -1,6 +1,7 @@
 package com.spring.chromavoyage.api.groups.controller;
 
 import com.spring.chromavoyage.api.groups.entity.Group;
+import com.spring.chromavoyage.api.groups.repository.GroupRepository;
 import com.spring.chromavoyage.api.groups.service.GroupService;
 import com.spring.chromavoyage.api.groups.service.UserInvitationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class GroupController {
 
     @Autowired
     private GroupService groupService;
+
+    @Autowired // GroupRepository를 주입받을 수 있도록 추가
+    private GroupRepository groupRepository;
 
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createGroup(@RequestBody CreateGroupRequest request) {
@@ -67,6 +71,34 @@ public class GroupController {
 
             // 초대 성공 응답
             return ResponseEntity.status(HttpStatus.CREATED).body(response("201", "User Invited Successfully", response));
+        } catch (UserInvitationException e) {
+            // 예외 처리 - 해당 예외에 따라 적절한 응답을 반환하도록 구현
+            String responseCode = e.getResponseCode();
+            String description = e.getDescription();
+            return ResponseEntity.status(e.getHttpStatus()).body(response(responseCode, description));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response("500", "Internal Server Error"));
+        }
+    }
+
+    @PatchMapping("/{group_id}")
+    public ResponseEntity<Map<String, Object>> setGroupAsFavorite(
+            @PathVariable("group_id") Long groupId,
+            @RequestBody SetFavoriteRequest request) {
+        try {
+            // 그룹이 존재하는지 확인합니다.
+            Group group = groupRepository.findById(groupId)
+                    .orElseThrow(() -> new UserInvitationException("404", "Group not found"));
+
+            // 권한 확인 로직이 있다면 추가할 수 있습니다. (예: 사용자가 그룹에 속해있는지 확인 등)
+
+            // 즐겨찾기 설정을 업데이트합니다.
+            group.setPin(request.getPin());
+            groupRepository.save(group);
+
+            // 성공 응답
+            return ResponseEntity.status(HttpStatus.OK).body(response("200", "Successfully Saved"));
         } catch (UserInvitationException e) {
             // 예외 처리 - 해당 예외에 따라 적절한 응답을 반환하도록 구현
             String responseCode = e.getResponseCode();
