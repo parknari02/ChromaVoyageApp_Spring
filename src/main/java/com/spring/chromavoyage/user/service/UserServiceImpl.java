@@ -85,8 +85,9 @@ public class UserServiceImpl implements UserService{
     }
 
     private GoogleOAuthToken getAccessToken(ResponseEntity<String> response) throws JsonProcessingException {
-        System.out.println("response.getBody() = " + response);
+        System.out.println("response.getBody() = " + response.getBody());
         GoogleOAuthToken googleOAuthToken= objectMapper.readValue(response.getBody(), GoogleOAuthToken.class);
+        System.out.println("googleOAuthToken" + googleOAuthToken.getAccess_token());
         return googleOAuthToken;
     }
 
@@ -98,7 +99,7 @@ public class UserServiceImpl implements UserService{
         ResponseEntity<String> accessTokenResponse = requestAccessToken(code);
         //응답 객체가 JSON형식으로 되어 있으므로, 이를 deserialization해서 자바 객체에 담을 것이다.
         GoogleOAuthToken oAuthToken = getAccessToken(accessTokenResponse);
-
+        System.out.println("oAuthToken" + oAuthToken.getAccess_token());
         //액세스 토큰을 다시 구글로 보내 구글에 저장된 사용자 정보가 담긴 응답 객체를 받아온다.
         ResponseEntity<String> userInfoResponse = requestUserInfo(oAuthToken);
         //다시 JSON 형식의 응답 객체를 자바 객체로 역직렬화한다.
@@ -111,15 +112,17 @@ public class UserServiceImpl implements UserService{
 //            String jwtToken=jwtService.createJwt(user_num,user_id);
             //액세스 토큰과 jwtToken, 이외 정보들이 담긴 자바 객체를 다시 전송한다.
             User foundUser = userRepository.findByEmail(userEmail);
-            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUser_id(), oAuthToken.getAccessToken(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
+            if(foundUser.getUsername() != googleUser.getUsername()){
+                foundUser.updateNm(googleUser.getUsername());
+            }
+            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUser_id(), oAuthToken.getAccess_token(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
             return socialOAuthGoogleRes;
         } else {
             userRepository.save(googleUser);
             User foundUser = userRepository.findByEmail(googleUser.getEmail());
-            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUser_id(), oAuthToken.getAccessToken(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
+            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUser_id(), oAuthToken.getAccess_token(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
             return socialOAuthGoogleRes;
         }
-//        code=4%2F0Adeu5BUSRUgnzA8KBrdcOFms-fM_-LocDVExKeaFTOlzmBKg9dzAunYvDXmwEFlpdNoAVA
     }
 
     private ResponseEntity<String> requestUserInfo(GoogleOAuthToken oAuthToken) {
@@ -128,46 +131,15 @@ public class UserServiceImpl implements UserService{
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", "Bearer " + oAuthToken.getAccessToken());
+        headers.add("Authorization", "Bearer " + oAuthToken.getAccess_token());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity(headers);
-
+        System.out.println(request.getHeaders().get("Authorization"));
         return restTemplate.exchange(url, HttpMethod.GET, request, String.class);
     }
 
-//    String GOOGLE_USERINFO_REQUEST_URL="https://www.googleapis.com/oauth2/v1/userinfo";
-//        restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
-//    //        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
-////            public boolean hasError(ClientHttpResponse response) throws IOException {
-////                HttpStatus statusCode = response.getStatusCode();
-////                return statusCode.series() == HttpStatus.Series.SERVER_ERROR;
-////            }
-////        });
-//    Map<String, Object> params = new HashMap<>();
-//        params.put("access_token", oAuthToken.getAccessToken());
-//
-//    ResponseEntity<String> responseEntity=restTemplate.postForEntity(GOOGLE_USERINFO_REQUEST_URL,
-//            params, String.class);
-//
-//        if(responseEntity.getStatusCode()== HttpStatus.OK){
-//        System.out.println("response.getBody() requestUserInfo = " + responseEntity.getBody());
-//        return responseEntity;
-//    }
-//        return responseEntity;
-////        throw new RuntimeException("non-token");
-//
-//    //header에 accessToken을 담는다.
-////        HttpHeaders headers = new HttpHeaders();
-////        headers.add("Authorization",oAuthToken.getIdToken());
-////
-////        //HttpEntity를 하나 생성해 헤더를 담아서 restTemplate으로 구글과 통신하게 된다.
-////        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity(headers);
-////
-////        ResponseEntity<String> response=restTemplate.exchange(GOOGLE_USERINFO_REQUEST_URL, HttpMethod.GET, request, String.class);
-////        System.out.println("response.getBody() requestUserInfo = " + response.getBody());
-////
-////        return response;
     public User getUserInfo(ResponseEntity<String> userInfoRes) throws JsonProcessingException {
+        System.out.println("userInfoRes" + userInfoRes.getBody());
         User googleUser=objectMapper.readValue(userInfoRes.getBody(), User.class);
         return googleUser;
     }
