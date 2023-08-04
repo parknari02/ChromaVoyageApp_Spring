@@ -1,5 +1,6 @@
 package com.spring.chromavoyage.api.groups.controller;
 
+import com.spring.chromavoyage.api.groups.domain.*;
 import com.spring.chromavoyage.api.groups.entity.Group;
 import com.spring.chromavoyage.api.groups.entity.GroupMember;
 import com.spring.chromavoyage.api.groups.repository.GroupMemberRepository;
