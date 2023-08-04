@@ -63,6 +63,7 @@ public class ImageController {
             imageDto.setColoringLocationId(coloring_location_id);
 
             ImageEntity imageEntity = imageDto.toEntity();
+            imageEntity.setFile_name(imageDto.getFile_name());
             log.info(imageEntity.toString());
 
             ImageEntity savedImage = imageRepository.save(imageEntity); // image id 하나 DB에 저장

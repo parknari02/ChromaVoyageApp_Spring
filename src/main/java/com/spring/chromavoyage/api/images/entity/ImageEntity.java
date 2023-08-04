@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 @Table(name="image")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -22,7 +23,7 @@ public class ImageEntity implements Serializable {
     @Column(nullable = false)
     private String image_path;
 
-    @Column(nullable = false)
+    @Column(name="file_name")
     private String file_name;
 
     @Id
