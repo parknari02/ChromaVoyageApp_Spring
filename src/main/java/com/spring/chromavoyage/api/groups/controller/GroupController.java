@@ -72,10 +72,18 @@ public class GroupController {
             }
 
             // 초대할 사용자 정보가 유효한지 확인
-            GroupInvitationResponse response = groupService.inviteUserToGroup(groupId, request.getEmail());
+            GroupInvitationResponse groupInvitationResponse = groupService.inviteUserToGroup(groupId, request.getEmail());
+
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("responseCode", "201");
+            responseBody.put("description", "User Invited Successfully");
+            responseBody.put("userId", groupInvitationResponse.getUserId());
+            responseBody.put("email", groupInvitationResponse.getEmail());
+            responseBody.put("userName", groupInvitationResponse.getUserName());
+            responseBody.put("profileImagePath", groupInvitationResponse.getProfileImagePath());
 
             // 초대 성공 응답
-            return ResponseEntity.status(HttpStatus.CREATED).body(response("201", "User Invited Successfully", response));
+            return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
         } catch (UserInvitationException e) {
             // 예외 처리 - 해당 예외에 따라 적절한 응답을 반환하도록 구현
             String responseCode = e.getResponseCode();
@@ -94,7 +102,7 @@ public class GroupController {
         try {
             // 그룹이 존재하는지 확인합니다.
             Group group = groupRepository.findById(groupId)
-                    .orElseThrow(() -> new UserInvitationException("404", "Group not found"));
+                    .orElseThrow(() -> new UserInvitationException("403", "Forbidden"));
 
             // 권한 확인 로직이 있다면 추가할 수 있습니다. (예: 사용자가 그룹에 속해있는지 확인 등)
 
@@ -121,7 +129,7 @@ public class GroupController {
         try {
             // 그룹이 존재하는지 확인합니다.
             Group group = groupRepository.findById(groupId)
-                    .orElseThrow(() -> new UserInvitationException("404", "Group not found"));
+                    .orElseThrow(() -> new UserInvitationException("403", "Forbidden"));
 
             // "groupmember" 테이블에서 해당 그룹과 관련된 데이터를 먼저 삭제합니다.
             List<GroupMember> groupMembers = groupMemberRepository.findByGroup(group);
@@ -148,7 +156,7 @@ public class GroupController {
         Map<String, Object> response = new HashMap<>();
         response.put("ResponseCode", responseCode);
         response.put("description", description);
-        response.put("data", data);
+        response.put("group_id", data);
         return response;
     }
 
