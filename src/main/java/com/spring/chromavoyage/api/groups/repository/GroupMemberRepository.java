@@ -7,14 +7,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> {
-    boolean existsByGroupAndUser(Group group, User user);
+    boolean existsByGroupIdAndUserId(Long groupId, Long userId);
 
-    void deleteByGroupAndUser(Group group, User user);
+    void deleteByGroupIdAndUserId(Long groupId, Long userId);
 
-    List<GroupMember> findByGroup(Group group);
+    List<GroupMember> findByGroupId(Long groupId);
+
+
     // GroupMember 엔티티에 대한 추가적인 쿼리 메서드가 필요하다면 여기에 작성할 수 있습니다.
     // ...
 }
