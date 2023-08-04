@@ -31,7 +31,6 @@ public class FindService {
             }
         }
         return locationsName;
-
     }
 
     public List<String> findGroupLocations(Long groupId){
@@ -45,7 +44,5 @@ public class FindService {
             }
         }
         return locationsName;
-
     }
-
 }
