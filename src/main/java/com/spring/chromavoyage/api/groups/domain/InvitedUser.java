@@ -1,4 +1,4 @@
-package com.spring.chromavoyage.api.groups.controller;
+package com.spring.chromavoyage.api.groups.domain;
 
 public class InvitedUser {
     private Long user_id;

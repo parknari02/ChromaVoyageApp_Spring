@@ -1,6 +1,6 @@
 package com.spring.chromavoyage.api.groups.service;
 
-import com.spring.chromavoyage.api.groups.controller.GroupInvitationResponse;
+import com.spring.chromavoyage.api.groups.domain.GroupInvitationResponse;
 import com.spring.chromavoyage.api.groups.entity.Group;
 import com.spring.chromavoyage.api.groups.entity.GroupMember;
 import com.spring.chromavoyage.api.groups.entity.User;
@@ -9,7 +9,7 @@ import com.spring.chromavoyage.api.groups.repository.GroupRepository;
 import com.spring.chromavoyage.api.groups.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.sql.Timestamp;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
