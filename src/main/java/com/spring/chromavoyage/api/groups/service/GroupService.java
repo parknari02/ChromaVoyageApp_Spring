@@ -29,34 +29,25 @@ public class GroupService {
     private UserService userService;
 
     // 그룹 생성 및 초대할 사용자 등록 메서드
-    public long createGroup(String groupName, List<String> invitedEmails) {
+    public long createGroup(String groupName, List<UserInfo> invitedUsers) {
         // 그룹 생성
-
-
         Group newGroup = new Group();
         newGroup.setGroupName(groupName);
         newGroup.setCreatedDate(LocalDateTime.now());
         newGroup.setPin(false); // Replace "your_pin_value" with the actual pin value you want to set
         groupRepository.save(newGroup);
 
-        // 초대할 사용자 이메일로 사용자 ID를 조회하여 등록
-        List<User> invitedUsers = new ArrayList<>();
-        for (String email : invitedEmails) {
-            Long userId = userService.getUserIdByEmail(email);
+        // 초대할 사용자 등록
+        for (UserInfo userInfo : invitedUsers) {
+            Long userId = userService.getUserIdByEmail(userInfo.getEmail());
             if (userId != null) {
                 User invitedUser = userRepository.findById(userId).orElse(null);
                 if (invitedUser != null) {
-                    invitedUsers.add(invitedUser);
+                    GroupMember groupMember = new GroupMember(newGroup.getGroupId(), invitedUser.getUserId());
+                    groupMemberRepository.save(groupMember);
                 }
             }
         }
-
-        for (User user : invitedUsers) {
-            GroupMember groupMember = new GroupMember(newGroup.getGroupId(), user.getUserId());
-            groupMemberRepository.save(groupMember);
-        }
-
-
 
         return newGroup.getGroupId();
     }

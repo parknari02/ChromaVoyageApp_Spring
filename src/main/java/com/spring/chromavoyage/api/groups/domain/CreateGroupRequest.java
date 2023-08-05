@@ -1,10 +1,12 @@
 package com.spring.chromavoyage.api.groups.domain;
 
+import com.spring.chromavoyage.api.groups.service.UserInfo;
+
 import java.util.List;
 
 public class CreateGroupRequest {
     private String group_name;
-    private List<String> invited_emails;
+    private List<UserInfo> invited_emails;
 
     public String getGroup_name() {
         return group_name;
@@ -14,11 +16,11 @@ public class CreateGroupRequest {
         this.group_name = group_name;
     }
 
-    public List<String> getInvited_emails() {
+    public List<UserInfo> getInvited_emails() {
         return invited_emails;
     }
 
-    public void setInvited_users(List<String> invited_users) {
+    public void setInvited_users(List<UserInfo> invited_users) {
         this.invited_emails = invited_users;
     }
 }

@@ -47,12 +47,7 @@ public class GroupController {
                 throw new UserInvitationException("409", "Conflict");
             }
 
-            // 초대할 사용자 이메일 정보로 사용자 ID 조회
-//            List<Long> invitedUserIds = request.getInvited_emails().stream()
-//                    .map(email -> userService.getUserIdByEmail(email))
-//                    .filter(Objects::nonNull) // null이 아닌 사용자 ID만 필터링
-//                    .collect(Collectors.toList());
-
+            
             // 그룹 생성 및 초대할 사용자 등록
             long groupId = groupService.createGroup(request.getGroup_name(), request.getInvited_emails());
 
@@ -146,7 +141,7 @@ public class GroupController {
             groupRepository.delete(group);
 
             // 성공 응답
-            return ResponseEntity.status(HttpStatus.OK).body(response("200", "Group Deleted Successfully"));
+            return ResponseEntity.status(HttpStatus.OK).body(response("204", "Group Deleted Successfully"));
         } catch (UserInvitationException e) {
             // 예외 처리 - 해당 예외에 따라 적절한 응답을 반환하도록 구현
             String responseCode = e.getResponseCode();
