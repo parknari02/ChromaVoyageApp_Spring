@@ -47,7 +47,7 @@ public class GroupController {
                 throw new UserInvitationException("409", "Conflict");
             }
 
-            
+
             // 그룹 생성 및 초대할 사용자 등록
             long groupId = groupService.createGroup(request.getGroup_name(), request.getInvited_emails());
 
