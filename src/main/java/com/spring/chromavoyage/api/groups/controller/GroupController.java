@@ -7,6 +7,7 @@ import com.spring.chromavoyage.api.groups.repository.GroupMemberRepository;
 import com.spring.chromavoyage.api.groups.repository.GroupRepository;
 import com.spring.chromavoyage.api.groups.service.GroupService;
 import com.spring.chromavoyage.api.groups.service.UserInvitationException;
+import com.spring.chromavoyage.api.groups.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -30,32 +32,37 @@ public class GroupController {
     @Autowired
     private GroupMemberRepository groupMemberRepository;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createGroup(@RequestBody CreateGroupRequest request) {
         try {
-            // 필수 파라미터인 그룹 이름과 초대할 사용자 정보가 입력되었는지 확인
-            if (request.getGroup_name() == null || request.getGroup_name().isEmpty() || request.getInvited_users().isEmpty()) {
+            // 필수 파라미터인 그룹 이름과 초대할 사용자 이메일 정보가 입력되었는지 확인
+            if (request.getGroup_name() == null || request.getGroup_name().isEmpty() || request.getInvited_emails().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response("400", "Bad Request"));
             }
 
-            // 사용자 정보를 확인하고 존재하지 않는 사용자가 있는지 확인
-            List<Long> invitedUserIds = request.getInvited_users().stream()
-                    .map(InvitedUser::getUser_id)
-                    .collect(Collectors.toList());
-
-            if (!groupService.areAllUsersExist(invitedUserIds)) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response("403", "Forbidden"));
-            }
-
             if (groupService.isGroupNameExists(request.getGroup_name())) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(response("409", "Conflict"));
+                throw new UserInvitationException("409", "Conflict");
             }
+
+            // 초대할 사용자 이메일 정보로 사용자 ID 조회
+//            List<Long> invitedUserIds = request.getInvited_emails().stream()
+//                    .map(email -> userService.getUserIdByEmail(email))
+//                    .filter(Objects::nonNull) // null이 아닌 사용자 ID만 필터링
+//                    .collect(Collectors.toList());
 
             // 그룹 생성 및 초대할 사용자 등록
-            long groupId = groupService.createGroup(request.getGroup_name(), invitedUserIds);
+            long groupId = groupService.createGroup(request.getGroup_name(), request.getInvited_emails());
 
             // 성공 응답
             return ResponseEntity.status(HttpStatus.CREATED).body(response("201", "Group Created Successfully", groupId));
+        } catch (UserInvitationException e) {
+            // Handle the conflict response for existing group name
+            String responseCode = e.getResponseCode();
+            String description = e.getDescription();
+            return ResponseEntity.status(e.getHttpStatus()).body(response(responseCode, description));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response("500", "Internal Server Error"));
@@ -73,15 +80,15 @@ public class GroupController {
             }
 
             // 초대할 사용자 정보가 유효한지 확인
-            GroupInvitationResponse groupInvitationResponse = groupService.inviteUserToGroup(groupId, request.getEmail());
+            InviteUserResponse inviteUserResponse = groupService.inviteUserToGroup(groupId, request.getEmail());
 
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("responseCode", "201");
             responseBody.put("description", "User Invited Successfully");
-            responseBody.put("userId", groupInvitationResponse.getUserId());
-            responseBody.put("email", groupInvitationResponse.getEmail());
-            responseBody.put("userName", groupInvitationResponse.getUserName());
-            responseBody.put("profileImagePath", groupInvitationResponse.getProfileImagePath());
+            responseBody.put("userId", inviteUserResponse.getUserId()); // 수정된 부분
+            responseBody.put("email", inviteUserResponse.getEmail());
+            responseBody.put("userName", inviteUserResponse.getUserName());
+            responseBody.put("profileImagePath", inviteUserResponse.getProfileImagePath());
 
             // 초대 성공 응답
             return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
@@ -103,9 +110,8 @@ public class GroupController {
         try {
             // 그룹이 존재하는지 확인합니다.
             Group group = groupRepository.findById(groupId)
-                    .orElseThrow(() -> new UserInvitationException("403", "Forbidden"));
+                    .orElseThrow(() -> new UserInvitationException("404", "Not Found"));
 
-            // 권한 확인 로직이 있다면 추가할 수 있습니다. (예: 사용자가 그룹에 속해있는지 확인 등)
 
             // 즐겨찾기 설정을 업데이트합니다.
             group.setPin(request.getPin());
@@ -130,10 +136,10 @@ public class GroupController {
         try {
             // 그룹이 존재하는지 확인합니다.
             Group group = groupRepository.findById(groupId)
-                    .orElseThrow(() -> new UserInvitationException("403", "Forbidden"));
+                    .orElseThrow(() -> new UserInvitationException("404", "Not Found"));
 
             // "groupmember" 테이블에서 해당 그룹과 관련된 데이터를 먼저 삭제합니다.
-            List<GroupMember> groupMembers = groupMemberRepository.findByGroup(group);
+            List<GroupMember> groupMembers = groupMemberRepository.findByGroupId(groupId);
             groupMemberRepository.deleteAll(groupMembers);
 
             // 그룹을 삭제합니다.

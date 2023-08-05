@@ -17,7 +17,4 @@ public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> 
 
     List<GroupMember> findByGroupId(Long groupId);
 
-
-    // GroupMember 엔티티에 대한 추가적인 쿼리 메서드가 필요하다면 여기에 작성할 수 있습니다.
-    // ...
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 public class CreateGroupRequest {
     private String group_name;
-    private List<InvitedUser> invited_users;
+    private List<String> invited_emails;
 
     public String getGroup_name() {
         return group_name;
@@ -14,11 +14,11 @@ public class CreateGroupRequest {
         this.group_name = group_name;
     }
 
-    public List<InvitedUser> getInvited_users() {
-        return invited_users;
+    public List<String> getInvited_emails() {
+        return invited_emails;
     }
 
-    public void setInvited_users(List<InvitedUser> invited_users) {
-        this.invited_users = invited_users;
+    public void setInvited_users(List<String> invited_users) {
+        this.invited_emails = invited_users;
     }
 }

@@ -21,4 +21,7 @@ public class GroupMember implements Serializable {
     @Id
     @Column(name = "user_id")
     private Long userId;
+
+
 }
+
