@@ -1,5 +1,7 @@
 package com.spring.chromavoyage.api.images.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.spring.chromavoyage.api.images.domain.UploadFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -16,13 +18,15 @@ public class FileService {
 
     @Value("${file.dir}")
     private String fileDir;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+    private AmazonS3Client amazonS3Client;
 
     // /User/documents/../파일명.png 전체 경로 반환
     public String getFullPath(String filename) {
-        return fileDir + filename;
+        String filedir = "https://" + bucket + "/" + filename;
+        return filedir;
     }
-
-
 
     // 여러 개의 파일을 업로드하는 경우 iteration을 돌면서 모두 저장하고, 리스트에 담아서 저장된 객체들을 반환해줌
     // UploadFile --> fileName 관리하는 객체
@@ -48,7 +52,14 @@ public class FileService {
         String storeFileName = createStoreFileName(originalFilename); // createStoreFileName을 통해 uuid 이름 생성
 
         //File(저장시킬 파일 전체 경로)을 생성해서 transferTo를 통해 해당 경로에 저장
-        multipartFile.transferTo(new File(getFullPath(storeFileName)));
+//        multipartFile.transferTo(new File(getFullPath(storeFileName)));
+
+
+        // 파일 정보(메타데이터)와 함께, S3 버킷에 오브젝트 저장
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(multipartFile.getContentType());
+        metadata.setContentLength(multipartFile.getSize());
+        amazonS3Client.putObject(bucket, storeFileName, multipartFile.getInputStream(),metadata);
 
         // 저장한 파일의 원래 이름과, 서버에 저장시킨 이름을 관리하는 객체 UploadFile을 생성 및 반환
         return new UploadFile(originalFilename, storeFileName);

@@ -9,6 +9,7 @@ import com.spring.chromavoyage.api.images.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.amazonaws.services.s3.AmazonS3Client;
 import org.springframework.core.io.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,7 @@ public class ImageController {
     private final ImageRepository imageRepository;
     @Autowired
     private final FileService fileService; //service
+//    private final AmazonS3Client amazonS3Client;
 
     @PostMapping("/images/{coloring_location_id}")
     public void saveImage (@RequestParam Long group_id,
