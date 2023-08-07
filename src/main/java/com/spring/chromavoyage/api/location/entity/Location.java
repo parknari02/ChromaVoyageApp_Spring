@@ -15,4 +15,8 @@ public class Location {
     public String getLocationName() {
         return locationName;
     }
+
+    public Long getLocationId() {
+        return locationId;
+    }
 }

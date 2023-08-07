@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "user_coloring")
 public class UserColoring {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_coloring_id")
     private Long usercoloringId;
 

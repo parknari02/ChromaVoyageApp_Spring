@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Table(name = "coloring_location")
 public class ColoringLocation {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "coloring_location_id")
     private Long coloringlocationId;
 
