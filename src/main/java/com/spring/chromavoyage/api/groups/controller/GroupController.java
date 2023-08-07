@@ -1,10 +1,14 @@
 package com.spring.chromavoyage.api.groups.controller;
 
 import com.spring.chromavoyage.api.groups.domain.*;
+import com.spring.chromavoyage.api.groups.entity.ColoringLocation;
 import com.spring.chromavoyage.api.groups.entity.Group;
 import com.spring.chromavoyage.api.groups.entity.GroupMember;
+import com.spring.chromavoyage.api.groups.entity.User;
+import com.spring.chromavoyage.api.groups.repository.ColoringLocationRepository;
 import com.spring.chromavoyage.api.groups.repository.GroupMemberRepository;
 import com.spring.chromavoyage.api.groups.repository.GroupRepository;
+import com.spring.chromavoyage.api.groups.repository.UserRepository;
 import com.spring.chromavoyage.api.groups.service.GroupService;
 import com.spring.chromavoyage.api.groups.service.UserInvitationException;
 import com.spring.chromavoyage.api.groups.service.UserService;
@@ -13,11 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @RestController
 @RequestMapping("/groups")
@@ -33,7 +33,13 @@ public class GroupController {
     private GroupMemberRepository groupMemberRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
+    private ColoringLocationRepository coloringLocationRepository;
 
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createGroup(@RequestBody CreateGroupRequest request) {
@@ -151,6 +157,66 @@ public class GroupController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response("500", "Internal Server Error"));
         }
+    }
+
+
+    @PostMapping("/my")
+    public ResponseEntity findMyGroup(@RequestBody FindGroupsRequest request){
+        List<GroupMember> myGroups = groupMemberRepository.findByUserId(request.getUserId());
+        List<FindMyGroupsResponse> findMyGroupsResponses = new ArrayList<>();
+        for(GroupMember myGroup : myGroups){
+            Long groupId = myGroup.getGroupId();
+            FindMyGroupsResponse findMyGroupsResponse = new FindMyGroupsResponse();
+            List<GroupMember> groupMemberLists = groupMemberRepository.findByGroupId(groupId);
+            List<String> groupMemberUserName = new ArrayList<>();
+
+            for(GroupMember groupMemberList : groupMemberLists){
+                User user = userRepository.findUserByUserId(groupMemberList.getUserId());
+                groupMemberUserName.add(user.getUsername());
+            }
+            Group group = groupRepository.findGroupByGroupId(groupId);
+            findMyGroupsResponse.setGroupId(group.getGroupId());
+            findMyGroupsResponse.setGroupName(group.getGroupName());
+            findMyGroupsResponse.setCreatedDate(group.getCreatedDate());
+            findMyGroupsResponse.setPin(group.getPin());
+            findMyGroupsResponse.setGroupMembers(groupMemberUserName);
+            findMyGroupsResponses.add(findMyGroupsResponse);
+        }
+
+        return ResponseEntity.ok().body(findMyGroupsResponses);
+    }
+
+    @PostMapping("location")
+    public ResponseEntity FindGroupBylocationRequest(@RequestBody FindGroupsRequest request, @RequestParam("location_id") Long locationId){
+        List<GroupMember> myGroups = groupMemberRepository.findByUserId(request.getUserId());
+        List<FindGroupsByLocationResponse> findGroupsByLocationResponses = new ArrayList<>();
+        for(GroupMember myGroup : myGroups){
+            Long groupId = myGroup.getGroupId();
+            List<ColoringLocation> coloringLocations = coloringLocationRepository.findColoringPlaceByGroupId(groupId);
+            for(ColoringLocation coloringLocation : coloringLocations){
+                if(coloringLocation.getLocationId() == locationId){
+                    FindGroupsByLocationResponse findGroupsByLocationResponse = new FindGroupsByLocationResponse();
+                    List<GroupMember> groupMemberLists = groupMemberRepository.findByGroupId(groupId);
+                    List<String> groupMemberUserName = new ArrayList<>();
+
+                    for(GroupMember groupMemberList : groupMemberLists){
+                        User user = userRepository.findUserByUserId(groupMemberList.getUserId());
+                        groupMemberUserName.add(user.getUsername());
+                    }
+                    Group group = groupRepository.findGroupByGroupId(groupId);
+                    findGroupsByLocationResponse.setGroupId(group.getGroupId());
+                    findGroupsByLocationResponse.setGroupName(group.getGroupName());
+                    findGroupsByLocationResponse.setCreatedDate(group.getCreatedDate());
+                    findGroupsByLocationResponse.setPin(group.getPin());
+                    findGroupsByLocationResponse.setStartDate(coloringLocation.getStartDate());
+                    findGroupsByLocationResponse.setEndDate(coloringLocation.getEndDate());
+                    findGroupsByLocationResponse.setGroupMembers(groupMemberUserName);
+
+                    findGroupsByLocationResponses.add(findGroupsByLocationResponse);
+                }
+            }
+        }
+        return ResponseEntity.ok().body(findGroupsByLocationResponses);
     }
 
     // 응답 메시지를 생성하는 helper 메소드

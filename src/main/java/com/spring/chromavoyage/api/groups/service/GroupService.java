@@ -1,6 +1,7 @@
 package com.spring.chromavoyage.api.groups.service;
 
-import com.spring.chromavoyage.api.groups.controller.InviteUserResponse;
+import com.spring.chromavoyage.api.groups.domain.InviteUserResponse;
+import com.spring.chromavoyage.api.groups.entity.ColoringLocation;
 import com.spring.chromavoyage.api.groups.entity.Group;
 import com.spring.chromavoyage.api.groups.entity.GroupMember;
 import com.spring.chromavoyage.api.groups.entity.User;
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,6 +27,7 @@ public class GroupService {
 
     @Autowired
     private UserService userService;
+
 
     // 그룹 생성 및 초대할 사용자 등록 메서드
     public long createGroup(String groupName, List<UserInfo> invitedUsers) {
