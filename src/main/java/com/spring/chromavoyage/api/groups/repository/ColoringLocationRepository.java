@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface ColoringLocationRepository extends JpaRepository<ColoringLocation, Long> {
-    List<ColoringLocation> findColoringPlaceByGroupId(Long group_id);
+    public List<ColoringLocation> findColoringPlaceByGroupId(Long group_id);
 
 
 }

@@ -11,12 +11,12 @@ import java.util.Optional;
 
 @Repository
 public interface GroupMemberRepository extends JpaRepository<GroupMember, Long> {
-    boolean existsByGroupIdAndUserId(Long groupId, Long userId);
+    public boolean existsByGroupIdAndUserId(Long groupId, Long userId);
 
-    void deleteByGroupIdAndUserId(Long groupId, Long userId);
+    public void deleteByGroupIdAndUserId(Long groupId, Long userId);
 
-    List<GroupMember> findByGroupId(Long groupId);
+    public List<GroupMember> findByGroupId(Long groupId);
 
-    List<GroupMember> findByUserId(Long userId);
+    public List<GroupMember> findByUserId(Long userId);
 
 }
