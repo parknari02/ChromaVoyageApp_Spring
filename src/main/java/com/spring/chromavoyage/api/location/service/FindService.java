@@ -25,7 +25,6 @@ public class FindService {
         List<String> locationsName = new ArrayList<>();
         for (UserColoring location : locations) {
             Long locationId = location.getLocationId();
-            System.out.println(locationRepository.findLocationByLocationId(locationId).getLocationName());
             if (!locationsName.contains(locationRepository.findLocationByLocationId(locationId).getLocationName())) {
                 locationsName.add(locationRepository.findLocationByLocationId(locationId).getLocationName());
             }
@@ -38,7 +37,6 @@ public class FindService {
         List<String> locationsName = new ArrayList<>();
         for (ColoringLocation location : locations) {
             Long locationId = location.getLocationId();
-            System.out.println(locationRepository.findLocationByLocationId(locationId).getLocationName());
             if (!locationsName.contains(locationRepository.findLocationByLocationId(locationId).getLocationName())) {
                 locationsName.add(locationRepository.findLocationByLocationId(locationId).getLocationName());
             }
