@@ -15,9 +15,9 @@ public class FindGroupsByLocationResponse {
     private LocalDateTime createdDate;
 
     private Boolean pin;
-    private String startDate;
+    private Timestamp startDate;
 
-    private String endDate;
+    private Timestamp endDate;
 
     private List<String> groupMembers;
 
@@ -53,19 +53,19 @@ public class FindGroupsByLocationResponse {
         this.pin = pin;
     }
 
-    public String getStartDate() {
+    public Timestamp getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public void setStartDate(Timestamp startDate) {
         this.startDate = startDate;
     }
 
-    public String getEndDate() {
+    public Timestamp getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
+    public void setEndDate(Timestamp endDate) {
         this.endDate = endDate;
     }
 

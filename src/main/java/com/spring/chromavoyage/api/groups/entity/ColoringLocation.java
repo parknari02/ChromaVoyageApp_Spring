@@ -25,10 +25,10 @@ public class ColoringLocation {
     private Long locationId;
 
     @Column(name = "start_date")
-    private String startDate;
+    private Timestamp startDate;
 
     @Column(name = "end_date")
-    private String endDate;
+    private Timestamp endDate;
 
 
 }
