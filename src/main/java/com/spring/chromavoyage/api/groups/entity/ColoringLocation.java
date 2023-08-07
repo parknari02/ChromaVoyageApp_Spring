@@ -26,11 +26,11 @@ public class ColoringLocation {
 
     @CreationTimestamp
     @Column(name = "start_date")
-    private Timestamp startDate;
+    private String startDate;
 
     @CreationTimestamp
     @Column(name = "end_date")
-    private Timestamp endDate;
+    private String endDate;
 
 
 }

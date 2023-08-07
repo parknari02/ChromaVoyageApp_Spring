@@ -70,9 +70,9 @@ public class GroupController {
         }
     }
 
-    @PostMapping("/invite/{group_id}")
+    @PostMapping("/invite")
     public ResponseEntity<Map<String, Object>> inviteUserToGroup(
-            @PathVariable("group_id") Long groupId,
+            @RequestParam("group_id") Long groupId,
             @RequestBody InviteUserRequest request) {
         try {
             // 필수 파라미터인 이메일 정보가 입력되었는지 확인
@@ -104,9 +104,9 @@ public class GroupController {
         }
     }
 
-    @PatchMapping("/{group_id}")
+    @PatchMapping("/pin")
     public ResponseEntity<Map<String, Object>> setGroupAsFavorite(
-            @PathVariable("group_id") Long groupId,
+            @RequestParam("group_id") Long groupId,
             @RequestBody SetFavoriteRequest request) {
         try {
             // 그룹이 존재하는지 확인합니다.
@@ -131,9 +131,8 @@ public class GroupController {
         }
     }
 
-    @DeleteMapping("/{group_id}")
-    public ResponseEntity<Map<String, Object>> deleteGroup(
-            @PathVariable("group_id") Long groupId) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<Map<String, Object>> deleteGroup(@RequestParam("group_id") Long groupId) {
         try {
             // 그룹이 존재하는지 확인합니다.
             Group group = groupRepository.findById(groupId)
