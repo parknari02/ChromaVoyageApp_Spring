@@ -23,7 +23,7 @@ public class PlaceService {
         return placeRepository.findAll();
     }
 
-    public List<PlaceEntity> findPlaceByGroupIdAndColoringLocationId(int groupId, int coloringLocationId) {
+    public List<PlaceEntity> findPlaceByGroupIdAndColoringLocationId(Long groupId, Long coloringLocationId) {
         return placeRepository.findByGroupIdAndColoringLocationId(groupId, coloringLocationId);
 
     }

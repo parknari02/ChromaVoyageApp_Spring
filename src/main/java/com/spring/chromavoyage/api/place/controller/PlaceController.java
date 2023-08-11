@@ -26,16 +26,16 @@ public class PlaceController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/totalList")
     public ResponseEntity<List<PlaceEntity>> findAll() {
         // 장소 모두 조회
         List<PlaceEntity> placesList = placeService.findAll();
         return ResponseEntity.ok(placesList);
     }
 
-    @GetMapping("/{group_id}/{coloring_location_id}")
-    public ResponseEntity<?> searchPlace( @PathVariable("group_id") int groupId,
-                                          @PathVariable("coloring_location_id") int coloringLocationId) {
+    @GetMapping("/list}")
+    public ResponseEntity<?> searchPlace( @RequestParam("group_id") Long groupId, @RequestParam("coloring_location_id") Long coloringLocationId)
+    {
         List<PlaceEntity> places = placeService.findPlaceByGroupIdAndColoringLocationId(groupId, coloringLocationId);
 
         if (!places.isEmpty()) {
