@@ -105,7 +105,7 @@ public class UserServiceImpl implements UserService{
             //서버에 user가 존재하면 앞으로 회원 인가 처리를 위한 jwtToken을 발급한다.
 //            String jwtToken=jwtService.createJwt(user_num,user_id);
             //액세스 토큰과 jwtToken, 이외 정보들이 담긴 자바 객체를 다시 전송한다.
-            User foundUser = userRepository.findByEmail(userEmail);
+            User foundUser = userRepository.findUserByEmail(userEmail);
             if(foundUser.getUsername() != googleUser.getUsername()){
                 foundUser.updateNm(googleUser.getUsername());
             }
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService{
             return socialOAuthGoogleRes;
         } else {
             userRepository.save(googleUser);
-            User foundUser = userRepository.findByEmail(googleUser.getEmail());
+            User foundUser = userRepository.findUserByEmail(googleUser.getEmail());
             SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUserId(), oAuthToken.getAccess_token(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
             return socialOAuthGoogleRes;
         }

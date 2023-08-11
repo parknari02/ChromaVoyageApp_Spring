@@ -26,7 +26,7 @@ public class GroupService {
 
 
     // 그룹 생성 및 초대할 사용자 등록 메서드
-    public long createGroup(String groupName, List<UserInfo> invitedUsers) {
+    public long createGroup(Long userId, String groupName, List<UserInfo> invitedUsers) {
         // 그룹 생성
         Group newGroup = new Group();
         newGroup.setGroupName(groupName);
@@ -34,23 +34,19 @@ public class GroupService {
         newGroup.setPin(false); // Replace "your_pin_value" with the actual pin value you want to set
         groupRepository.save(newGroup);
 
+        GroupMember userGroupMember = new GroupMember(newGroup.getGroupId(), userId);
+        groupMemberRepository.save(userGroupMember);
+
+
         // 초대할 사용자 등록
         for (UserInfo userInfo : invitedUsers) {
-            User user = userRepository.findByEmail(userInfo.getEmail());
-            Long userId;
-            if(user != null){
-                userId = user.getUserId();
-            }
-            else {
-                userId = null;
-            }
-            if (userId != null) {
-                User invitedUser = userRepository.findById(userId).orElse(null);
-                if (invitedUser != null) {
-                    GroupMember groupMember = new GroupMember(newGroup.getGroupId(), invitedUser.getUserId());
-                    groupMemberRepository.save(groupMember);
-                }
-            }
+            System.out.println(userInfo.getEmail());
+            User user = userRepository.findUserByEmail(userInfo.getEmail());
+            System.out.println(user);
+            Long user_id = user.getUserId();
+            System.out.println(user_id);
+            GroupMember groupMember = new GroupMember(newGroup.getGroupId(), user_id);
+            groupMemberRepository.save(groupMember);
         }
 
         return newGroup.getGroupId();
@@ -66,7 +62,7 @@ public class GroupService {
         // 해당 그룹과 사용자 정보를 확인하여 초대 가능한지 여부를 판단하고 처리하는 로직을 구현합니다.
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new UserInvitationException("404", "Group not found"));
 
-        User invitedUser = userRepository.findByEmail(email);
+        User invitedUser = userRepository.findUserByEmail(email);
         if (invitedUser == null) {
             throw new UserInvitationException("404", "User not found");
         }

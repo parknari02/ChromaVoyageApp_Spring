@@ -53,9 +53,8 @@ public class GroupController {
                 throw new UserInvitationException("409", "Conflict");
             }
 
-
             // 그룹 생성 및 초대할 사용자 등록
-            long groupId = groupService.createGroup(request.getGroup_name(), request.getInvited_emails());
+            long groupId = groupService.createGroup(request.getUserId(), request.getGroup_name(), request.getInvited_emails());
 
             // 성공 응답
             return ResponseEntity.status(HttpStatus.CREATED).body(response("201", "Group Created Successfully", groupId));
@@ -210,6 +209,7 @@ public class GroupController {
                     findGroupsByLocationResponse.setStartDate(coloringLocation.getStartDate());
                     findGroupsByLocationResponse.setEndDate(coloringLocation.getEndDate());
                     findGroupsByLocationResponse.setGroupMembers(groupMemberUserName);
+                    findGroupsByLocationResponse.setColoringLocationId(coloringLocation.getColoringlocationId());
 
                     findGroupsByLocationResponses.add(findGroupsByLocationResponse);
                 }
