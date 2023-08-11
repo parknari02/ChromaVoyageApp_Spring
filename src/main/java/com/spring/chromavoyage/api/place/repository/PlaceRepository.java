@@ -1,6 +1,5 @@
-package com.chromavoyage.api.place.repository;
-
-import com.chromavoyage.api.place.entity.PlaceEntity;
+package com.spring.chromavoyage.api.place.repository;
+import com.spring.chromavoyage.api.place.entity.PlaceEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.transaction.Transactional;

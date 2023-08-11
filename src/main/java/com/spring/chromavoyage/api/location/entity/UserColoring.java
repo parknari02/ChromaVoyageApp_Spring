@@ -1,5 +1,7 @@
 package com.spring.chromavoyage.api.location.entity;
+
 import lombok.Data;
+
 import javax.persistence.*;
 
 @IdClass(UserColoringPk.class)

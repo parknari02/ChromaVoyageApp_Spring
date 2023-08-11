@@ -4,20 +4,22 @@ import com.spring.chromavoyage.api.groups.domain.*;
 import com.spring.chromavoyage.api.groups.entity.ColoringLocation;
 import com.spring.chromavoyage.api.groups.entity.Group;
 import com.spring.chromavoyage.api.groups.entity.GroupMember;
-import com.spring.chromavoyage.api.groups.entity.User;
 import com.spring.chromavoyage.api.groups.repository.ColoringLocationRepository;
 import com.spring.chromavoyage.api.groups.repository.GroupMemberRepository;
 import com.spring.chromavoyage.api.groups.repository.GroupRepository;
-import com.spring.chromavoyage.api.groups.repository.UserRepository;
 import com.spring.chromavoyage.api.groups.service.GroupService;
 import com.spring.chromavoyage.api.groups.service.UserInvitationException;
-import com.spring.chromavoyage.api.groups.service.UserService;
+import com.spring.chromavoyage.user.model.User;
+import com.spring.chromavoyage.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/groups")
@@ -35,8 +37,6 @@ public class GroupController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private ColoringLocationRepository coloringLocationRepository;

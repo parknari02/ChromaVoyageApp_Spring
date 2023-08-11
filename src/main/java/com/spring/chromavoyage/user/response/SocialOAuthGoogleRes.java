@@ -8,7 +8,7 @@ import lombok.Data;
 public class SocialOAuthGoogleRes {
 
 //    private String jwtToken;
-    private int userId;
+    private Long userId;
     private String accessToken;
     private String email;
     private String username;

@@ -1,10 +1,13 @@
 package com.spring.chromavoyage.api.location.controller;
 
+import com.spring.chromavoyage.api.groups.entity.ColoringLocation;
+import com.spring.chromavoyage.api.groups.entity.GroupMember;
+import com.spring.chromavoyage.api.groups.repository.ColoringLocationRepository;
+import com.spring.chromavoyage.api.groups.repository.GroupMemberRepository;
 import com.spring.chromavoyage.api.location.domain.AddLocationsRequest;
 import com.spring.chromavoyage.api.location.domain.FindLocationsRequest;
-import com.spring.chromavoyage.api.location.entity.*;
-import com.spring.chromavoyage.api.location.repository.ColoringLocationRepository;
-import com.spring.chromavoyage.api.location.repository.GroupMemberRepository;
+import com.spring.chromavoyage.api.location.entity.Location;
+import com.spring.chromavoyage.api.location.entity.UserColoring;
 import com.spring.chromavoyage.api.location.repository.LocationRepository;
 import com.spring.chromavoyage.api.location.repository.UserColoringRepository;
 import com.spring.chromavoyage.api.location.service.FindService;

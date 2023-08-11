@@ -1,9 +1,9 @@
-package com.chromavoyage.api.place.service;
-
-import com.chromavoyage.api.place.entity.PlaceEntity;
-import com.chromavoyage.api.place.repository.PlaceRepository;
-import com.chromavoyage.api.place.dto.PlaceDTO;
+package com.spring.chromavoyage.api.place.service;
+import com.spring.chromavoyage.api.place.dto.PlaceDTO;
+import com.spring.chromavoyage.api.place.entity.PlaceEntity;
+import com.spring.chromavoyage.api.place.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +11,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PlaceService {
-    private final PlaceRepository placeRepository;
-
+    @Autowired
+    private PlaceRepository placeRepository;
 
     public void save(PlaceDTO placeDTO) {
         PlaceEntity placeEntity = PlaceEntity.toPlaceEntity(placeDTO);

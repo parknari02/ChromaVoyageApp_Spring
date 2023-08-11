@@ -2,9 +2,6 @@ package com.spring.chromavoyage.user.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.spring.chromavoyage.user.model.GoogleOAuthToken;
 import com.spring.chromavoyage.user.model.User;
 import com.spring.chromavoyage.user.repository.UserRepository;
@@ -12,19 +9,16 @@ import com.spring.chromavoyage.user.response.SocialOAuthGoogleRes;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,12 +109,12 @@ public class UserServiceImpl implements UserService{
             if(foundUser.getUsername() != googleUser.getUsername()){
                 foundUser.updateNm(googleUser.getUsername());
             }
-            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUser_id(), oAuthToken.getAccess_token(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
+            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUserId(), oAuthToken.getAccess_token(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
             return socialOAuthGoogleRes;
         } else {
             userRepository.save(googleUser);
             User foundUser = userRepository.findByEmail(googleUser.getEmail());
-            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUser_id(), oAuthToken.getAccess_token(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
+            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUserId(), oAuthToken.getAccess_token(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
             return socialOAuthGoogleRes;
         }
     }

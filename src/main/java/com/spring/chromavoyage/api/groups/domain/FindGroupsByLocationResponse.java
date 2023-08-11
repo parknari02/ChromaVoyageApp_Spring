@@ -1,8 +1,5 @@
 package com.spring.chromavoyage.api.groups.domain;
 
-import org.hibernate.annotations.CreationTimestamp;
-
-import javax.persistence.Column;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;

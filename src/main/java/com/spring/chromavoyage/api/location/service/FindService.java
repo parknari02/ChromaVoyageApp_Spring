@@ -1,8 +1,8 @@
 package com.spring.chromavoyage.api.location.service;
 
-import com.spring.chromavoyage.api.location.entity.ColoringLocation;
+import com.spring.chromavoyage.api.groups.entity.ColoringLocation;
+import com.spring.chromavoyage.api.groups.repository.ColoringLocationRepository;
 import com.spring.chromavoyage.api.location.entity.UserColoring;
-import com.spring.chromavoyage.api.location.repository.ColoringLocationRepository;
 import com.spring.chromavoyage.api.location.repository.LocationRepository;
 import com.spring.chromavoyage.api.location.repository.UserColoringRepository;
 import org.springframework.beans.factory.annotation.Autowired;

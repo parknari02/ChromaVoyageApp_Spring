@@ -12,7 +12,7 @@ import java.io.IOException;
 @RestController
 public class AccountController {
     @Autowired
-    private UserService userService;
+    UserService userService;
 
     @GetMapping("/auth/google")
     public UserResponse<String> socialLoginRedirect() throws IOException {

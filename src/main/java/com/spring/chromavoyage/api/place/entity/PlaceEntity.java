@@ -1,14 +1,12 @@
-package com.chromavoyage.api.place.entity;
+package com.spring.chromavoyage.api.place.entity;
 
-import com.chromavoyage.api.place.dto.PlaceDTO;
-import lombok.Getter;
-import lombok.Setter;
+import com.spring.chromavoyage.api.place.dto.PlaceDTO;
+import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
-@Setter
+@Data
 @Table(name = "placelist")
 public class PlaceEntity {
     //

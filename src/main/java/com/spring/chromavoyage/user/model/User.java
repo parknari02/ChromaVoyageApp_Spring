@@ -1,31 +1,37 @@
 package com.spring.chromavoyage.user.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@Getter
-@Entity(name = "user")
-@NoArgsConstructor
+@Entity
+@Data
+@Table(name = "user")
 public class User {
-    @Id // primary key
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int user_id;
-    @JsonProperty("name")
-    private String username;
-    private String email;
-    private String picture;
+    @Column(name = "user_id")
+    private Long userId;
+
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    @Column(name = "createDate")
     private Timestamp createDate;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "picture")
+    private String picture;
+
+    @Column(name = "provider")
+    private String provider;
+
+    @Column(name = "username")
+    private String username;
 
     public void updateNm(String username){
         this.username = username;

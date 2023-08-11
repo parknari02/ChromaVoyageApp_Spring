@@ -1,6 +1,7 @@
-package com.chromavoyage.api.place.dto;
+package com.spring.chromavoyage.api.place.dto;
 
-import com.chromavoyage.api.place.entity.PlaceEntity;
+
+import com.spring.chromavoyage.api.place.entity.PlaceEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
