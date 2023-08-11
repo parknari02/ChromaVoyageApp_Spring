@@ -89,32 +89,30 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public SocialOAuthGoogleRes oAuthLogin(String code) throws IOException {
 
-        //구글로 일회성 코드를 보내 액세스 토큰이 담긴 응답객체를 받아옴
         ResponseEntity<String> accessTokenResponse = requestAccessToken(code);
-        //응답 객체가 JSON형식으로 되어 있으므로, 이를 deserialization해서 자바 객체에 담을 것이다.
+
         GoogleOAuthToken oAuthToken = getAccessToken(accessTokenResponse);
         System.out.println("oAuthToken" + oAuthToken.getAccess_token());
-        //액세스 토큰을 다시 구글로 보내 구글에 저장된 사용자 정보가 담긴 응답 객체를 받아온다.
+
         ResponseEntity<String> userInfoResponse = requestUserInfo(oAuthToken);
-        //다시 JSON 형식의 응답 객체를 자바 객체로 역직렬화한다.
+
         User googleUser = getUserInfo(userInfoResponse);
         String userEmail = googleUser.getEmail();
 
-        //우리 서버의 db와 대조하여 해당 user가 존재하는 지 확인한다.
+        //우리 서버의 db와 대조하여 해당 user가 존재하는 지 확인
         if (userRepository.existsByEmail(userEmail)) {
-            //서버에 user가 존재하면 앞으로 회원 인가 처리를 위한 jwtToken을 발급한다.
-//            String jwtToken=jwtService.createJwt(user_num,user_id);
-            //액세스 토큰과 jwtToken, 이외 정보들이 담긴 자바 객체를 다시 전송한다.
             User foundUser = userRepository.findByEmail(userEmail);
             if(foundUser.getUsername() != googleUser.getUsername()){
                 foundUser.updateNm(googleUser.getUsername());
             }
-            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUserId(), oAuthToken.getAccess_token(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
+
+            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUserId(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture()); // oAuthToken.getAccess_token(),
             return socialOAuthGoogleRes;
         } else {
             userRepository.save(googleUser);
             User foundUser = userRepository.findByEmail(googleUser.getEmail());
-            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUserId(), oAuthToken.getAccess_token(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture());
+
+            SocialOAuthGoogleRes socialOAuthGoogleRes = new SocialOAuthGoogleRes(foundUser.getUserId(), foundUser.getEmail(), foundUser.getUsername(), foundUser.getPicture()); //oAuthToken.getAccess_token(),
             return socialOAuthGoogleRes;
         }
     }
