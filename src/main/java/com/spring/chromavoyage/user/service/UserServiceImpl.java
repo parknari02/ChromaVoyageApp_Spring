@@ -101,7 +101,9 @@ public class UserServiceImpl implements UserService{
 
         //우리 서버의 db와 대조하여 해당 user가 존재하는 지 확인
         if (userRepository.existsByEmail(userEmail)) {
+
             User foundUser = userRepository.findByEmail(userEmail);
+
             if(foundUser.getUsername() != googleUser.getUsername()){
                 foundUser.updateNm(googleUser.getUsername());
             }

@@ -24,11 +24,9 @@ public class ColoringLocation {
     @Column(name = "location_id")
     private Long locationId;
 
-    @CreationTimestamp
     @Column(name = "start_date")
     private Timestamp startDate;
 
-    @CreationTimestamp
     @Column(name = "end_date")
     private Timestamp endDate;
 

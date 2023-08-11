@@ -5,8 +5,13 @@ import com.spring.chromavoyage.api.groups.service.UserInfo;
 import java.util.List;
 
 public class CreateGroupRequest {
+    private Long userId;
     private String group_name;
     private List<UserInfo> invited_emails;
+
+    public Long getUserId() {
+        return userId;
+    }
 
     public String getGroup_name() {
         return group_name;

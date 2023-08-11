@@ -53,9 +53,8 @@ public class GroupController {
                 throw new UserInvitationException("409", "Conflict");
             }
 
-
             // 그룹 생성 및 초대할 사용자 등록
-            long groupId = groupService.createGroup(request.getGroup_name(), request.getInvited_emails());
+            long groupId = groupService.createGroup(request.getUserId(), request.getGroup_name(), request.getInvited_emails());
 
             // 성공 응답
             return ResponseEntity.status(HttpStatus.CREATED).body(response("201", "Group Created Successfully", groupId));
@@ -70,9 +69,9 @@ public class GroupController {
         }
     }
 
-    @PostMapping("/invite/{group_id}")
+    @PostMapping("/invite")
     public ResponseEntity<Map<String, Object>> inviteUserToGroup(
-            @PathVariable("group_id") Long groupId,
+            @RequestParam("group_id") Long groupId,
             @RequestBody InviteUserRequest request) {
         try {
             // 필수 파라미터인 이메일 정보가 입력되었는지 확인
@@ -104,9 +103,9 @@ public class GroupController {
         }
     }
 
-    @PatchMapping("/{group_id}")
+    @PatchMapping("/pin")
     public ResponseEntity<Map<String, Object>> setGroupAsFavorite(
-            @PathVariable("group_id") Long groupId,
+            @RequestParam("group_id") Long groupId,
             @RequestBody SetFavoriteRequest request) {
         try {
             // 그룹이 존재하는지 확인합니다.
@@ -131,9 +130,8 @@ public class GroupController {
         }
     }
 
-    @DeleteMapping("/{group_id}")
-    public ResponseEntity<Map<String, Object>> deleteGroup(
-            @PathVariable("group_id") Long groupId) {
+    @DeleteMapping("/delete")
+    public ResponseEntity<Map<String, Object>> deleteGroup(@RequestParam("group_id") Long groupId) {
         try {
             // 그룹이 존재하는지 확인합니다.
             Group group = groupRepository.findById(groupId)
@@ -211,6 +209,7 @@ public class GroupController {
                     findGroupsByLocationResponse.setStartDate(coloringLocation.getStartDate());
                     findGroupsByLocationResponse.setEndDate(coloringLocation.getEndDate());
                     findGroupsByLocationResponse.setGroupMembers(groupMemberUserName);
+                    findGroupsByLocationResponse.setColoringLocationId(coloringLocation.getColoringlocationId());
 
                     findGroupsByLocationResponses.add(findGroupsByLocationResponse);
                 }
