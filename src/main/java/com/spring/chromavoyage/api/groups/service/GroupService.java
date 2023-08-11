@@ -41,7 +41,7 @@ public class GroupService {
         // 초대할 사용자 등록
         for (UserInfo userInfo : invitedUsers) {
             System.out.println(userInfo.getEmail());
-            User user = userRepository.findUserByEmail(userInfo.getEmail());
+            User user = userRepository.findByEmail(userInfo.getEmail());
             System.out.println(user);
             Long user_id = user.getUserId();
             System.out.println(user_id);
@@ -62,7 +62,7 @@ public class GroupService {
         // 해당 그룹과 사용자 정보를 확인하여 초대 가능한지 여부를 판단하고 처리하는 로직을 구현합니다.
         Group group = groupRepository.findById(groupId).orElseThrow(() -> new UserInvitationException("404", "Group not found"));
 
-        User invitedUser = userRepository.findUserByEmail(email);
+        User invitedUser = userRepository.findByEmail(email);
         if (invitedUser == null) {
             throw new UserInvitationException("404", "User not found");
         }
