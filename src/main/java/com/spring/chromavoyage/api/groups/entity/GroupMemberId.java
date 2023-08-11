@@ -1,6 +1,7 @@
 package com.spring.chromavoyage.api.groups.entity;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 

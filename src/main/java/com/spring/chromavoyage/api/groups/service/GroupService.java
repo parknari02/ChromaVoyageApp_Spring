@@ -1,13 +1,12 @@
 package com.spring.chromavoyage.api.groups.service;
 
 import com.spring.chromavoyage.api.groups.domain.InviteUserResponse;
-import com.spring.chromavoyage.api.groups.entity.ColoringLocation;
 import com.spring.chromavoyage.api.groups.entity.Group;
 import com.spring.chromavoyage.api.groups.entity.GroupMember;
-import com.spring.chromavoyage.api.groups.entity.User;
 import com.spring.chromavoyage.api.groups.repository.GroupMemberRepository;
 import com.spring.chromavoyage.api.groups.repository.GroupRepository;
-import com.spring.chromavoyage.api.groups.repository.UserRepository;
+import com.spring.chromavoyage.user.model.User;
+import com.spring.chromavoyage.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +24,6 @@ public class GroupService {
     @Autowired
     private GroupMemberRepository groupMemberRepository;
 
-    @Autowired
-    private UserService userService;
-
 
     // 그룹 생성 및 초대할 사용자 등록 메서드
     public long createGroup(String groupName, List<UserInfo> invitedUsers) {
@@ -40,7 +36,14 @@ public class GroupService {
 
         // 초대할 사용자 등록
         for (UserInfo userInfo : invitedUsers) {
-            Long userId = userService.getUserIdByEmail(userInfo.getEmail());
+            User user = userRepository.findByEmail(userInfo.getEmail());
+            Long userId;
+            if(user != null){
+                userId = user.getUserId();
+            }
+            else {
+                userId = null;
+            }
             if (userId != null) {
                 User invitedUser = userRepository.findById(userId).orElse(null);
                 if (invitedUser != null) {

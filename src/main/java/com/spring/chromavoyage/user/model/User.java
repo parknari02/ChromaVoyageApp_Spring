@@ -1,10 +1,11 @@
-package com.spring.chromavoyage.api.groups.entity;
+package com.spring.chromavoyage.user.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -15,6 +16,8 @@ public class User {
     @Column(name = "user_id")
     private Long userId;
 
+    @CreationTimestamp
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     @Column(name = "createDate")
     private Timestamp createDate;
 
@@ -30,4 +33,7 @@ public class User {
     @Column(name = "username")
     private String username;
 
+    public void updateNm(String username){
+        this.username = username;
+    }
 }

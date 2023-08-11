@@ -11,4 +11,6 @@ public interface ColoringLocationRepository extends JpaRepository<ColoringLocati
     public List<ColoringLocation> findColoringPlaceByGroupId(Long group_id);
 
 
+
+
 }
