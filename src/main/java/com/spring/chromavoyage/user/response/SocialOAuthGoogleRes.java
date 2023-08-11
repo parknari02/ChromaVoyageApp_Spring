@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SocialOAuthGoogleRes {
-    private int userId;
+    private Long userId;
 //    private String accessToken;
     private String email;
-    private String username;
+    private String name;
     private String picture;
 }

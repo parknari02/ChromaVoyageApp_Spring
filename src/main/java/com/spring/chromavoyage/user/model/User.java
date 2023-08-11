@@ -1,6 +1,7 @@
 package com.spring.chromavoyage.user.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -14,7 +15,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Integer userId;
+    private Long userId;
 
     @CreationTimestamp
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
@@ -27,10 +28,8 @@ public class User {
     @Column(name = "picture")
     private String picture;
 
-    @Column(name = "provider")
-    private String provider;
-
     @Column(name = "username")
+    @JsonProperty("name")
     private String username;
 
     public void updateNm(String username){
