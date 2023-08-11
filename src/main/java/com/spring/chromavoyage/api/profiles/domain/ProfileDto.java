@@ -1,20 +1,20 @@
 package com.spring.chromavoyage.api.profiles.domain;
 
+import com.spring.chromavoyage.api.images.domain.UploadFile;
 import com.spring.chromavoyage.api.profiles.entity.ProfileEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+//import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class ProfileDto {
-    private Long userId;
+    private Long user_id;
     private String user_name;
     private String profileImg_path;
-    private UploadImage imageFile;
+    private UploadFile imageFile;
 
     public ProfileEntity toEntity() {
         return ProfileEntity.builder()

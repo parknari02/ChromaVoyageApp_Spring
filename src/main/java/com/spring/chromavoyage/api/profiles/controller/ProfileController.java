@@ -1,11 +1,12 @@
 package com.spring.chromavoyage.api.profiles.controller;
 
 
+import com.spring.chromavoyage.api.images.domain.UploadFile;
 import com.spring.chromavoyage.api.profiles.domain.ProfileDto;
-import com.spring.chromavoyage.api.profiles.domain.UploadImage;
+import com.spring.chromavoyage.api.profiles.domain.ProfileInfo;
 import com.spring.chromavoyage.api.profiles.entity.ProfileEntity;
 import com.spring.chromavoyage.api.profiles.repository.ProfileRepository;
-//import com.spring.chromavoyage.api.images.service.FileService;
+import com.spring.chromavoyage.api.images.service.FileService;
 import com.spring.chromavoyage.api.profiles.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,9 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 
 @Slf4j
@@ -34,14 +32,14 @@ public class ProfileController {
     private final ProfileService profileService;
 
 //    @Autowired
-//    private final FileService fileService; //service
+    private final FileService fileService; //service
 
 
     // 프로필 정보 수정 -> 사용자 이름 및 사용자 프로필 이미지 수정
     @PostMapping("/profiles")
-    public ResponseEntity<ProfileDto> updateProfile(@RequestParam Long user_id,
-                            @RequestParam String name,
-                            @RequestParam MultipartFile file) {
+    public ResponseEntity<ProfileInfo> updateProfile(@RequestPart Long user_id,
+                            @RequestPart String name,
+                            @ModelAttribute MultipartFile file) throws IOException {
 
         // 예외 : 필수 파라미터 부재시 - 400:BAD_REQUEST
         if ( (user_id == null) || (name == null && file == null))  {
@@ -55,44 +53,45 @@ public class ProfileController {
 
         try {
             // aws 서버에 파일이름 변경 및 경로 저장
-            UploadImage storeImage = fileStore.storeFile(file);
+            UploadFile storeImage = fileService.storeFile(file);
+
             // 이미지 파일 서버에 저장 후, 절대 경로 가져오기.
-            String fullpath = fileService.getFullPath(storeImage.getStoreImgName());
-            ProfileDto profileDto = new ProfileDto(name, fullpath, storeImage);
+            String fullpath = fileService.getFullPath(storeImage.getStoreFileName());
 
-            // 해당 경로 -> 사용자의 프로필 이미지 경로로 업데이트
-            // 요청으로 들어온 사용자 이름으로 업데이트
-            if (name == null && file != null) { // 이미지 파일만 변경되는 경우
-                ProfileEntity savedProfile = profileService.updateProfileImg(user_id, fullpath);
+            ProfileDto profileDto = new ProfileDto(user_id, name, fullpath, storeImage);
 
-            } else if (file == null && name != null) { // 사용자 이름만 변경되는 경우
-                ProfileEntity savedProfile = profileService.updateProfileName(user_id, name);
+            ProfileInfo profileInfo = new ProfileInfo(profileDto.getUser_name(), profileDto.getProfileImg_path());
 
-            } else if (file != null && name != null) { // 사용자 이름과 이미지가 모두 변경되는 경우
-                profileService.updateProfileName(user_id, name);
-                ProfileEntity savedProfile = profileService.updateProfileImg(user_id, fullpath);
-            }
-            log.info(savedProfile.toString());
+
+            profileService.updateProfileName(user_id, name);
+            ProfileEntity profileEntity = profileService.updateProfileImg(user_id, fullpath);
+
+            log.info("---profileInfo---");
+            log.info(profileInfo.toString());
+
+
             header.setContentType(MediaType.APPLICATION_JSON);
 
-            return new ResponseEntity<>(profileDto, header, HttpStatus.OK);
+            return new ResponseEntity<>(profileInfo, header, HttpStatus.OK);
         }
         catch (Exception e) {
             log.info(e.toString());
-            return new ResponseEntity(HttpStatus.BAD_GATEWAY)
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
 
     // 프로필 정보 조회
     @GetMapping("/profiles")
-    public ResponseEntity<ProfileDto> retrieveProfile(@RequestParam Long user_id) throws IOException {
+    public ResponseEntity<ProfileInfo> retrieveProfile(@RequestBody ProfileDto req) throws IOException {
+        Long user_id = req.getUser_id();
+
         // 예외 : 필수 파라미터 부재시 - 400:BAD_REQUEST
         if (user_id == null) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        log.info("user-id={}", user_id);
+        log.info("user_id={}", user_id);
 
 //        List<ImageEntity> imageEntities = imageRepository.findAllImageEntitiesByColoringLocationIdAndGroupIdAndLocationId(coloring_location_id, group_id, location_id);
 
@@ -107,23 +106,23 @@ public class ProfileController {
             // 데이터 존재하면 Content-Type = Application/json
             header.setContentType(MediaType.APPLICATION_JSON);
 
-            ProfileDto profileDto = new ProfileDto();
-            profileDto.setUserId(profileEntity.getUserId());
-            profileDto.setUser_name(profileEntity.getUser_name());
-            profileDto.setProfileImg_path(profileEntity.getProfileImg_path());
+//            ProfileDto profileDto = new ProfileDto(profileEntity.getUserId(), profileEntity.getUser_name(), profileEntity.getProfileImg_path(), null);
+//            log.info("----dto----");
+//            log.info(profileDto.toString());
 
-            log.info("----dto----");
-            log.info(profileDto.toString());
+            ProfileInfo profileInfo = new ProfileInfo(profileEntity.getUser_name(), profileEntity.getProfileImg_path());
 
-            return new ResponseEntity<>(profileDto, header, HttpStatus.OK);
+            return new ResponseEntity<>(profileInfo, header, HttpStatus.OK);
         } catch (Exception e) {
             log.info(e.toString());
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
-    @DeleteMapping("/images")
-    public ResponseEntity deleteProfileImg(@RequestParam Long user_id) {
+    @DeleteMapping("/profiles")
+    public ResponseEntity deleteProfileImg(@RequestBody ProfileDto req) {
+        Long user_id = req.getUser_id();
+
         // 예외 : 필수 파라미터 부재시 - 400:BAD_REQUEST
         if (user_id == null) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);

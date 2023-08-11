@@ -1,10 +1,11 @@
 package com.spring.chromavoyage.api.images.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.ObjectMetadata;
+//import com.amazonaws.services.s3.AmazonS3Client;
+//import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.spring.chromavoyage.api.images.domain.UploadFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -13,18 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Component
+@Service
 public class FileService {
 
     @Value("${file.dir}")
     private String fileDir;
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
-    private AmazonS3Client amazonS3Client;
+//    @Value("${cloud.aws.s3.bucket}")
+//    private String bucket;
+//    private AmazonS3Client amazonS3Client;
 
     // /User/documents/../파일명.png 전체 경로 반환
     public String getFullPath(String filename) {
-        String filedir = "https://" + bucket + "/" + filename;
+//        String filedir = "https://" + bucket + "/" + filename; // ---> S3 경로로 저장
+        String filedir = fileDir + filename; // ---> 로컬 파일시스템으로 저장
         return filedir;
     }
 
@@ -52,14 +54,14 @@ public class FileService {
         String storeFileName = createStoreFileName(originalFilename); // createStoreFileName을 통해 uuid 이름 생성
 
         //File(저장시킬 파일 전체 경로)을 생성해서 transferTo를 통해 해당 경로에 저장
-//        multipartFile.transferTo(new File(getFullPath(storeFileName)));
+        multipartFile.transferTo(new File(getFullPath(storeFileName)));
 
 
         // 파일 정보(메타데이터)와 함께, S3 버킷에 오브젝트 저장
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentType(multipartFile.getContentType());
-        metadata.setContentLength(multipartFile.getSize());
-        amazonS3Client.putObject(bucket, storeFileName, multipartFile.getInputStream(),metadata);
+//        ObjectMetadata metadata = new ObjectMetadata();
+//        metadata.setContentType(multipartFile.getContentType());
+//        metadata.setContentLength(multipartFile.getSize());
+//        amazonS3Client.putObject(bucket, storeFileName, multipartFile.getInputStream(),metadata);
 
         // 저장한 파일의 원래 이름과, 서버에 저장시킨 이름을 관리하는 객체 UploadFile을 생성 및 반환
         return new UploadFile(originalFilename, storeFileName);

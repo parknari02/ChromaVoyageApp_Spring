@@ -9,7 +9,7 @@ import com.spring.chromavoyage.api.images.service.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.amazonaws.services.s3.AmazonS3Client;
+//import com.amazonaws.services.s3.AmazonS3Client;
 import org.springframework.core.io.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
