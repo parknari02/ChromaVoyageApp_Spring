@@ -19,6 +19,15 @@ public class FindGroupsByLocationResponse {
     private List<String> groupMembers;
 
     private Long coloringLocationId;
+    private Long locationId;
+
+    public Long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(Long locationId) {
+        this.locationId = locationId;
+    }
 
     public Long getColoringLocationId() {
         return coloringLocationId;

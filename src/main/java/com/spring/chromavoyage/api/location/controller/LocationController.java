@@ -48,7 +48,7 @@ public class LocationController {
     public ResponseEntity addLocations(@RequestBody AddLocationsRequest request, @RequestParam("group_id") Long groupId){
         //location_name => location_id로 찾기
         List<Long> locationId = new ArrayList<>();
-        List<GroupMember> groupMembers = groupMemberRepository.findByGroupId(groupId);
+        List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByGroupId(groupId);
 
         for(String locationName : request.getLocationName()){
             Location location = locationRepository.findLocationByLocationName(locationName);

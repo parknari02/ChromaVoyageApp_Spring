@@ -9,6 +9,8 @@ import com.spring.chromavoyage.api.groups.repository.GroupMemberRepository;
 import com.spring.chromavoyage.api.groups.repository.GroupRepository;
 import com.spring.chromavoyage.api.groups.service.GroupService;
 import com.spring.chromavoyage.api.groups.service.UserInvitationException;
+import com.spring.chromavoyage.api.location.entity.Location;
+import com.spring.chromavoyage.api.location.repository.LocationRepository;
 import com.spring.chromavoyage.user.model.User;
 import com.spring.chromavoyage.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,9 @@ public class GroupController {
 
     @Autowired
     private ColoringLocationRepository coloringLocationRepository;
+
+    @Autowired
+    private LocationRepository locationRepository;
 
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createGroup(@RequestBody CreateGroupRequest request) {
@@ -138,7 +143,7 @@ public class GroupController {
                     .orElseThrow(() -> new UserInvitationException("404", "Not Found"));
 
             // "groupmember" 테이블에서 해당 그룹과 관련된 데이터를 먼저 삭제합니다.
-            List<GroupMember> groupMembers = groupMemberRepository.findByGroupId(groupId);
+            List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByGroupId(groupId);
             groupMemberRepository.deleteAll(groupMembers);
 
             // 그룹을 삭제합니다.
@@ -160,12 +165,12 @@ public class GroupController {
 
     @PostMapping("/my")
     public ResponseEntity findMyGroup(@RequestBody FindGroupsRequest request){
-        List<GroupMember> myGroups = groupMemberRepository.findByUserId(request.getUserId());
+        List<GroupMember> myGroups = groupMemberRepository.findGroupMemberByUserId(request.getUserId());
         List<FindMyGroupsResponse> findMyGroupsResponses = new ArrayList<>();
         for(GroupMember myGroup : myGroups){
             Long groupId = myGroup.getGroupId();
             FindMyGroupsResponse findMyGroupsResponse = new FindMyGroupsResponse();
-            List<GroupMember> groupMemberLists = groupMemberRepository.findByGroupId(groupId);
+            List<GroupMember> groupMemberLists = groupMemberRepository.findGroupMemberByGroupId(groupId);
             List<String> groupMemberUserName = new ArrayList<>();
 
             for(GroupMember groupMemberList : groupMemberLists){
@@ -185,16 +190,20 @@ public class GroupController {
     }
 
     @PostMapping("location")
-    public ResponseEntity FindGroupBylocationRequest(@RequestBody FindGroupsRequest request, @RequestParam("location_id") Long locationId){
-        List<GroupMember> myGroups = groupMemberRepository.findByUserId(request.getUserId());
+    public ResponseEntity FindGroupBylocationRequest(@RequestBody FindGroupsByLocationRequest request){
+        Location location = locationRepository.findLocationByLocationName(request.getLocationName());
+        Long locationId = location.getLocationId();
+
+        List<GroupMember> myGroups = groupMemberRepository.findGroupMemberByUserId(request.getUserId());
         List<FindGroupsByLocationResponse> findGroupsByLocationResponses = new ArrayList<>();
+
         for(GroupMember myGroup : myGroups){
             Long groupId = myGroup.getGroupId();
             List<ColoringLocation> coloringLocations = coloringLocationRepository.findColoringPlaceByGroupId(groupId);
             for(ColoringLocation coloringLocation : coloringLocations){
                 if(coloringLocation.getLocationId() == locationId){
                     FindGroupsByLocationResponse findGroupsByLocationResponse = new FindGroupsByLocationResponse();
-                    List<GroupMember> groupMemberLists = groupMemberRepository.findByGroupId(groupId);
+                    List<GroupMember> groupMemberLists = groupMemberRepository.findGroupMemberByGroupId(groupId);
                     List<String> groupMemberUserName = new ArrayList<>();
 
                     for(GroupMember groupMemberList : groupMemberLists){
@@ -210,6 +219,7 @@ public class GroupController {
                     findGroupsByLocationResponse.setEndDate(coloringLocation.getEndDate());
                     findGroupsByLocationResponse.setGroupMembers(groupMemberUserName);
                     findGroupsByLocationResponse.setColoringLocationId(coloringLocation.getColoringlocationId());
+                    findGroupsByLocationResponse.setLocationId(locationId);
 
                     findGroupsByLocationResponses.add(findGroupsByLocationResponse);
                 }

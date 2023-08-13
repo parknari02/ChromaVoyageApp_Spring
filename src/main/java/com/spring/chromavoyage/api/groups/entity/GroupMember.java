@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name = "GROUPMEMBER")
+@Table(name = "groupmember")
 @IdClass(GroupMemberId.class)
 public class GroupMember implements Serializable {
     @Id
