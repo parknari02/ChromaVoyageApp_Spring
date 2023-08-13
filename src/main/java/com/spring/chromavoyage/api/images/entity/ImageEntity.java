@@ -1,5 +1,7 @@
 package com.spring.chromavoyage.api.images.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.spring.chromavoyage.api.images.domain.ImageDto;
 import lombok.*;
 
@@ -18,6 +20,7 @@ public class ImageEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="image_id")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long imageId;
 
     @Column(nullable = false)

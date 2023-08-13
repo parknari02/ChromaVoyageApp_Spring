@@ -56,7 +56,7 @@ public class ProfileController {
             UploadFile storeImage = fileService.storeFile(file);
 
             ProfileDto profileDto = new ProfileDto(user_id, name, storeImage.getImageUrl(), storeImage);
-        
+
             ProfileInfo profileInfo = new ProfileInfo(profileDto.getUser_name(), profileDto.getProfileImg_path());
 
 

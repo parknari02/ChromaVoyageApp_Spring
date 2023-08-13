@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,7 +38,7 @@ public class ImageController {
     private final AmazonS3Client amazonS3Client;
 
     @PostMapping("/images/{coloring_location_id}")
-    public void saveImage (@RequestParam Long group_id,
+    public List<ImageEntity> saveImages (@RequestParam Long group_id,
                            @RequestParam Long location_id,
                            @PathVariable Long coloring_location_id,
                            @RequestPart(name="images") List<MultipartFile> file
@@ -52,7 +53,7 @@ public class ImageController {
 
         // 업로드 된 이미지 가져와서 저장 + 저장 후 (원래 이름, 서버용 이름) 객체 리스트 반환
         List<UploadFile> storeImageFiles = fileService.storeFiles(file);
-
+        List<ImageEntity> imageEntities = new ArrayList<>();
         // 데이터베이스에 저장
         for (UploadFile storeImageFile : storeImageFiles) {
 
@@ -65,9 +66,11 @@ public class ImageController {
             ImageEntity imageEntity = imageDto.toEntity();
 //            log.info(imageEntity.toString());
 
-            ImageEntity savedImage = imageRepository.save(imageEntity); // image id 하나 DB에 저장
+            ImageEntity savedImage = imageRepository.saveAndFlush(imageEntity); // image id 하나 DB에 저장
 //            log.info(savedImage.toString());
+            imageEntities.add(savedImage);
         }
+        return imageEntities;
     }
 
     @GetMapping("/images/{coloring_location_id}")

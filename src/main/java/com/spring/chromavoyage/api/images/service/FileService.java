@@ -5,6 +5,7 @@ package com.spring.chromavoyage.api.images.service;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.spring.chromavoyage.api.images.domain.UploadFile;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,11 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class FileService {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-    private AmazonS3Client amazonS3Client;
+    private final AmazonS3Client amazonS3Client;
 
     // 기본 파일 저장 함수
     public List<UploadFile> storeFiles(List<MultipartFile>  multipartFiles) throws IOException {
