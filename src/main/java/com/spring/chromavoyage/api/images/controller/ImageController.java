@@ -1,5 +1,6 @@
 package com.spring.chromavoyage.api.images.controller;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.spring.chromavoyage.api.images.domain.ImageDto;
 import com.spring.chromavoyage.api.images.domain.ImageInfo;
 import com.spring.chromavoyage.api.images.domain.UploadFile;
@@ -33,17 +34,17 @@ public class ImageController {
     private final ImageRepository imageRepository;
     @Autowired
     private final FileService fileService; //service
-//    private final AmazonS3Client amazonS3Client;
+    private final AmazonS3Client amazonS3Client;
 
     @PostMapping("/images/{coloring_location_id}")
     public void saveImage (@RequestParam Long group_id,
                            @RequestParam Long location_id,
                            @PathVariable Long coloring_location_id,
-                           @ModelAttribute List<MultipartFile> file
+                           @RequestPart(name="images") List<MultipartFile> file
                              ) throws IOException {
-        log.info("group_id={}", group_id);
-        log.info("location_id={}", location_id);
-        log.info("coloring_location_id={}", coloring_location_id);
+//        log.info("group_id={}", group_id);
+//        log.info("location_id={}", location_id);
+//        log.info("coloring_location_id={}", coloring_location_id);
 
         // coloring_location_id에 해당하는 이미지 객체 생성 및 저장.
         // 단, 해당 이미지가 해당 group, location, coloring location의 id를 모두 가져야 함
@@ -51,31 +52,27 @@ public class ImageController {
 
         // 업로드 된 이미지 가져와서 저장 + 저장 후 (원래 이름, 서버용 이름) 객체 리스트 반환
         List<UploadFile> storeImageFiles = fileService.storeFiles(file);
-//        UploadFile storeImageFile = fileStore.storeFile(file);
 
         // 데이터베이스에 저장
         for (UploadFile storeImageFile : storeImageFiles) {
 
             imageDto.setImageFile(storeImageFile); // 파일이름관리
-            imageDto.setImage_path(fileService.getFullPath(storeImageFile.getStoreFileName())); // 파일 저장경로
-            imageDto.setFile_name(storeImageFile.getUploadFileName()); // 원본 파일 이름
             // 받아온 id 정보 (group, location, coloring location)
             imageDto.setGroupId(group_id);
             imageDto.setLocationId(location_id);
             imageDto.setColoringLocationId(coloring_location_id);
 
             ImageEntity imageEntity = imageDto.toEntity();
-            imageEntity.setFile_name(imageDto.getFile_name());
-            log.info(imageEntity.toString());
+//            log.info(imageEntity.toString());
 
             ImageEntity savedImage = imageRepository.save(imageEntity); // image id 하나 DB에 저장
-            log.info(savedImage.toString());
+//            log.info(savedImage.toString());
         }
     }
 
     @GetMapping("/images/{coloring_location_id}")
     public ResponseEntity<List<ImageInfo>> retrieveImages(@RequestParam Long group_id,
-                                               @RequestParam Long location_id,
+                                               @RequestParam String location_id,
                                                @PathVariable Long coloring_location_id) throws IOException {
         HttpHeaders header = new HttpHeaders();
 

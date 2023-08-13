@@ -39,8 +39,9 @@ public class ImageEntity implements Serializable {
     private Long coloringLocationId;
 
     @Builder
-    public ImageEntity(String image_path, Long group_id, Long location_id, Long coloring_location_id) {
+    public ImageEntity(String image_path, String file_name, Long group_id, Long location_id, Long coloring_location_id) {
         this.image_path = image_path;
+        this.file_name = file_name;
         this.groupId = group_id;
         this.locationId = location_id;
         this.coloringLocationId = coloring_location_id;

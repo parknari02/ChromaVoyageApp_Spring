@@ -37,17 +37,17 @@ public class ProfileController {
 
     // 프로필 정보 수정 -> 사용자 이름 및 사용자 프로필 이미지 수정
     @PostMapping("/profiles")
-    public ResponseEntity<ProfileInfo> updateProfile(@RequestPart Long user_id,
-                            @RequestPart String name,
-                            @ModelAttribute MultipartFile file) throws IOException {
+    public ResponseEntity<ProfileInfo> updateProfile(@RequestParam Long user_id,
+                            @RequestParam String name,
+                            @RequestPart(name = "image") MultipartFile file) throws IOException {
 
         // 예외 : 필수 파라미터 부재시 - 400:BAD_REQUEST
         if ( (user_id == null) || (name == null && file == null))  {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
 
-        log.info("user_id={}", user_id);
-        log.info("user_name={}", name);
+//        log.info("user_id={}", user_id);
+//        log.info("user_name={}", name);
 
         HttpHeaders header = new HttpHeaders();
 
@@ -55,19 +55,16 @@ public class ProfileController {
             // aws 서버에 파일이름 변경 및 경로 저장
             UploadFile storeImage = fileService.storeFile(file);
 
-            // 이미지 파일 서버에 저장 후, 절대 경로 가져오기.
-            String fullpath = fileService.getFullPath(storeImage.getStoreFileName());
-
-            ProfileDto profileDto = new ProfileDto(user_id, name, fullpath, storeImage);
-
+            ProfileDto profileDto = new ProfileDto(user_id, name, storeImage.getImageUrl(), storeImage);
+        
             ProfileInfo profileInfo = new ProfileInfo(profileDto.getUser_name(), profileDto.getProfileImg_path());
 
 
             profileService.updateProfileName(user_id, name);
-            ProfileEntity profileEntity = profileService.updateProfileImg(user_id, fullpath);
+            ProfileEntity profileEntity = profileService.updateProfileImg(user_id, storeImage.getImageUrl());
 
-            log.info("---profileInfo---");
-            log.info(profileInfo.toString());
+//            log.info("---profileInfo---");
+//            log.info(profileInfo.toString());
 
 
             header.setContentType(MediaType.APPLICATION_JSON);
@@ -75,7 +72,7 @@ public class ProfileController {
             return new ResponseEntity<>(profileInfo, header, HttpStatus.OK);
         }
         catch (Exception e) {
-            log.info(e.toString());
+//            log.info(e.toString());
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
