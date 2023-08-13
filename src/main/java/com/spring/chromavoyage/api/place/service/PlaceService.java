@@ -15,7 +15,15 @@ public class PlaceService {
     private PlaceRepository placeRepository;
 
     public void save(PlaceDTO placeDTO) {
-        PlaceEntity placeEntity = PlaceEntity.toPlaceEntity(placeDTO);
+        PlaceEntity placeEntity = new PlaceEntity();
+        placeEntity.setPlaceName(placeDTO.getPlaceName());
+        placeEntity.setColoringLocationId(placeDTO.getColoringLocationId());
+        placeEntity.setGroupId(placeDTO.getGroupId());
+        placeEntity.setLocationId(placeDTO.getLocationId());
+        placeEntity.setPlaceName(placeDTO.getPlaceName());
+        placeEntity.setAddress(placeDTO.getAddress());
+        placeEntity.setLatitude(placeDTO.getLatitude());
+        placeEntity.setLongitude(placeDTO.getLongitude());
         placeRepository.save(placeEntity);
     }
 

@@ -1,53 +1,44 @@
 package com.spring.chromavoyage.api.place.entity;
 
+import com.spring.chromavoyage.api.groups.entity.ColoringLocationPk;
 import com.spring.chromavoyage.api.place.dto.PlaceDTO;
 import lombok.Data;
 
 import javax.persistence.*;
-
+@IdClass(PlacePk.class)
 @Entity
 @Data
 @Table(name = "placelist")
 public class PlaceEntity {
     //
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
+    @Column(name = "placelist_id")
+    @GeneratedValue(strategy = GenerationType.AUTO) // auto_increment
     private Long placeListId;
 
-    @Column(nullable = false)
+    @Id
+    @Column(name = "coloring_location_id")
     private Long coloringLocationId;
 
-    @Column(nullable = false)
+    @Id
+    @Column(name = "group_id")
     private Long groupId;
 
-    @Column(nullable = false)
+    @Id
+    @Column(name = "location_id")
     private String locationId;
 
-    @Column(nullable = false)
+
+    @Column(name = "place_name")
     private String placeName;
 
-    @Lob
-    @Column(nullable = false)
+    @Column(name = "address")
     private String address;
 
-    @Column(nullable = false)
+    @Column(name = "latitude")
     private double latitude;
 
-    @Column(nullable = false)
+    @Column(name = "longitude")
     private double longitude;
-
-    public static PlaceEntity toPlaceEntity(PlaceDTO placeDTO) {
-        PlaceEntity placeEntity = new PlaceEntity();
-        placeEntity.setPlaceListId(placeDTO.getPlaceListId());
-        placeEntity.setColoringLocationId(placeDTO.getColoringLocationId());
-        placeEntity.setGroupId(placeDTO.getGroupId());
-        placeEntity.setLocationId(placeDTO.getLocationId());
-        placeEntity.setPlaceName(placeDTO.getPlaceName());
-        placeEntity.setAddress(placeDTO.getAddress());
-        placeEntity.setLatitude(placeDTO.getLatitude());
-        placeEntity.setLongitude(placeDTO.getLongitude());
-        return placeEntity;
-    }
-
 
 }
