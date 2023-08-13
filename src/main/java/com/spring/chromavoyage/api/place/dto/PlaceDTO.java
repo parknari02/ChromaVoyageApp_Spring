@@ -12,10 +12,10 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class PlaceDTO {
-    private int placeListId;
-    private int coloringLocationId;
-    private int groupId;
-    private String locationName;
+    private Long placeListId;
+    private Long coloringLocationId;
+    private Long groupId;
+    private String locationId;
     private String placeName;
     private String address;
     private double latitude;
@@ -26,7 +26,7 @@ public class PlaceDTO {
         placeDTO.setPlaceListId(placeEntity.getPlaceListId());
         placeDTO.setColoringLocationId(placeEntity.getColoringLocationId());
         placeDTO.setGroupId(placeEntity.getGroupId());
-        placeDTO.setLocationName(placeEntity.getLocationName());
+        placeDTO.setLocationId(placeEntity.getLocationId());
         placeDTO.setPlaceName(placeEntity.getPlaceName());
         placeDTO.setAddress(placeEntity.getAddress());
         placeDTO.setLatitude(placeEntity.getLatitude());

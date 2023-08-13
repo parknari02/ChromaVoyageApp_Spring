@@ -10,7 +10,7 @@ import java.util.List;
 public interface PlaceRepository extends JpaRepository<PlaceEntity, Integer> {
 
 
-    List<PlaceEntity> findByGroupIdAndColoringLocationId(int groupId, int coloringLocationId);
+    List<PlaceEntity> findByGroupIdAndColoringLocationId(Long groupId, Long coloringLocationId);
 
     @Transactional
     void deleteByPlaceName(String placeName);
