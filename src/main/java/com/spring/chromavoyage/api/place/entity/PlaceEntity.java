@@ -12,13 +12,13 @@ public class PlaceEntity {
     //
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
-    private int placeListId;
+    private Long placeListId;
 
     @Column(nullable = false)
-    private int coloringLocationId;
+    private Long coloringLocationId;
 
     @Column(nullable = false)
-    private int groupId;
+    private Long groupId;
 
     @Column(nullable = false)
     private String locationId;

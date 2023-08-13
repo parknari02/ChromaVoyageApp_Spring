@@ -12,9 +12,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class PlaceDTO {
-    private int placeListId;
-    private int coloringLocationId;
-    private int groupId;
+    private Long placeListId;
+    private Long coloringLocationId;
+    private Long groupId;
     private String locationId;
     private String placeName;
     private String address;

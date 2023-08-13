@@ -34,7 +34,7 @@ public class PlaceController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<?> searchPlace( @RequestParam("group_id") Long groupId, @RequestParam("coloring_location_id") Long coloringLocationId)
+    public ResponseEntity<?> searchPlace(@RequestParam("group_id") Long groupId, @RequestParam("coloring_location_id") Long coloringLocationId)
     {
         List<PlaceEntity> places = placeService.findPlaceByGroupIdAndColoringLocationId(groupId, coloringLocationId);
 
