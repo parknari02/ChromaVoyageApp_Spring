@@ -23,7 +23,7 @@ public class PlaceController {
     public ResponseEntity<?> savePlace(@RequestBody PlaceDTO placeDTO) {
         // 장소 저장
         placeService.save(placeDTO);
-        return new ResponseEntity(HttpStatus.OK);
+        return ResponseEntity.ok("Place saved.");
     }
 
     @GetMapping("/totalList")
