@@ -1,7 +1,6 @@
 package com.spring.chromavoyage.api.groups.entity;
 
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -14,7 +13,7 @@ public class ColoringLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "coloring_location_id")
-    private Long coloringlocationId;
+    private Long coloringLocationId;
 
     @Id
     @Column(name = "group_id")

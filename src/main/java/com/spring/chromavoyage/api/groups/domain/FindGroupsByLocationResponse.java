@@ -5,9 +5,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class FindGroupsByLocationResponse {
+    private Long coloringLocationId;
+    private Long locationId;
     private Long groupId;
 
     private String groupName;
+    private List<String> groupMembers;
 
     private LocalDateTime createdDate;
 
@@ -15,11 +18,6 @@ public class FindGroupsByLocationResponse {
     private Timestamp startDate;
 
     private Timestamp endDate;
-
-    private List<String> groupMembers;
-
-    private Long coloringLocationId;
-    private Long locationId;
 
     public Long getLocationId() {
         return locationId;

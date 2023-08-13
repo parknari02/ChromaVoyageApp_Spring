@@ -24,13 +24,13 @@ public class LocationController {
     @Autowired
     private FindService findService;
     @Autowired
-    LocationRepository locationRepository;
+    private LocationRepository locationRepository;
     @Autowired
-    ColoringLocationRepository coloringLocationRepository;
+    private ColoringLocationRepository coloringLocationRepository;
     @Autowired
-    GroupMemberRepository groupMemberRepository;
+    private GroupMemberRepository groupMemberRepository;
     @Autowired
-    UserColoringRepository userColoringRepository;
+    private UserColoringRepository userColoringRepository;
 
     @PostMapping(" ")
     public ResponseEntity<List<String>> findLocations(@RequestBody FindLocationsRequest request) {

@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class ColoringLocationPk implements Serializable {
-    private Long coloringlocationId;
+    private Long coloringLocationId;
     private Long groupId;
     private Long locationId;
 }

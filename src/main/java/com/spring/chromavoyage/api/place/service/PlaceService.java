@@ -28,8 +28,13 @@ public class PlaceService {
 
     }
 
-    public void deleteByPlaceName(String placeName) {
-        placeRepository.deleteByPlaceName(placeName);
+    public void deleteByPlaceName(Long coloringLocationId, String placeName){
+        List<PlaceEntity> placelist = placeRepository.findPlaceEntityByColoringLocationId(coloringLocationId);
+        for(PlaceEntity place:placelist){
+            if(place.getPlaceName().equals(placeName)){
+                placeRepository.delete(place);
+            }
+        }
 
     }
 }

@@ -23,7 +23,7 @@ public class PlaceEntity {
     @Column(nullable = false)
     private String locationId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String placeName;
 
     @Lob

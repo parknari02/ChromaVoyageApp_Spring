@@ -193,7 +193,6 @@ public class GroupController {
     public ResponseEntity FindGroupBylocationRequest(@RequestBody FindGroupsByLocationRequest request){
         Location location = locationRepository.findLocationByLocationName(request.getLocationName());
         Long locationId = location.getLocationId();
-
         List<GroupMember> myGroups = groupMemberRepository.findGroupMemberByUserId(request.getUserId());
         List<FindGroupsByLocationResponse> findGroupsByLocationResponses = new ArrayList<>();
 
@@ -218,7 +217,7 @@ public class GroupController {
                     findGroupsByLocationResponse.setStartDate(coloringLocation.getStartDate());
                     findGroupsByLocationResponse.setEndDate(coloringLocation.getEndDate());
                     findGroupsByLocationResponse.setGroupMembers(groupMemberUserName);
-                    findGroupsByLocationResponse.setColoringLocationId(coloringLocation.getColoringlocationId());
+                    findGroupsByLocationResponse.setColoringLocationId(coloringLocation.getColoringLocationId());
                     findGroupsByLocationResponse.setLocationId(locationId);
 
                     findGroupsByLocationResponses.add(findGroupsByLocationResponse);
