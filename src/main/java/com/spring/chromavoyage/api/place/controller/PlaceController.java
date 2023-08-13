@@ -4,7 +4,6 @@ import com.spring.chromavoyage.api.place.dto.PlaceDTO;
 import com.spring.chromavoyage.api.place.entity.PlaceEntity;
 import com.spring.chromavoyage.api.place.service.PlaceService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlaceController {
     // 생성자 주입
-    @Autowired
     private PlaceService placeService;
 
     @PostMapping("/save")
