@@ -15,7 +15,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PlaceController {
     // 생성자 주입
-    private PlaceService placeService;
+
+
+    private final PlaceService placeService;
 
     @PostMapping("/save")
     public ResponseEntity<?> savePlace(@RequestBody PlaceDTO placeDTO) {
@@ -31,7 +33,7 @@ public class PlaceController {
         return ResponseEntity.ok(placesList);
     }
 
-    @GetMapping("/list}")
+    @GetMapping("/list")
     public ResponseEntity<?> searchPlace( @RequestParam("group_id") Long groupId, @RequestParam("coloring_location_id") Long coloringLocationId)
     {
         List<PlaceEntity> places = placeService.findPlaceByGroupIdAndColoringLocationId(groupId, coloringLocationId);

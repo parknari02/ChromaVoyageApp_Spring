@@ -21,7 +21,7 @@ public class PlaceEntity {
     private int groupId;
 
     @Column(nullable = false)
-    private String locationName;
+    private String locationId;
 
     @Column(nullable = false, unique = true)
     private String placeName;
@@ -41,7 +41,7 @@ public class PlaceEntity {
         placeEntity.setPlaceListId(placeDTO.getPlaceListId());
         placeEntity.setColoringLocationId(placeDTO.getColoringLocationId());
         placeEntity.setGroupId(placeDTO.getGroupId());
-        placeEntity.setLocationName(placeDTO.getLocationName());
+        placeEntity.setLocationId(placeDTO.getLocationId());
         placeEntity.setPlaceName(placeDTO.getPlaceName());
         placeEntity.setAddress(placeDTO.getAddress());
         placeEntity.setLatitude(placeDTO.getLatitude());
