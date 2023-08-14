@@ -1,31 +1,24 @@
 package com.spring.chromavoyage.api.images.controller;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.spring.chromavoyage.api.images.domain.ImageDto;
 import com.spring.chromavoyage.api.images.domain.ImageInfo;
 import com.spring.chromavoyage.api.images.domain.UploadFile;
 import com.spring.chromavoyage.api.images.entity.ImageEntity;
 import com.spring.chromavoyage.api.images.repository.ImageRepository;
 import com.spring.chromavoyage.api.images.service.FileService;
-import com.spring.chromavoyage.aws.S3Uploader;
+import com.spring.chromavoyage.aws.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 //import com.amazonaws.services.s3.AmazonS3Client;
-import org.springframework.core.io.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 @Slf4j
@@ -36,7 +29,7 @@ public class ImageController {
     private final ImageRepository imageRepository;
     @Autowired
     private final FileService fileService; //service
-    private final S3Uploader s3Uploader;
+    private final S3Service s3Service;
 
 
     @PostMapping("/images/{coloring_location_id}")
@@ -60,7 +53,7 @@ public class ImageController {
         // S3에 업로드
         try {
             for (MultipartFile multipartFile : file) {
-                s3Uploader.uploadFiles(multipartFile, "static");
+                s3Service.uploadFiles(multipartFile, "");
             }
         } catch (Exception e) { }
 //        return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -151,7 +144,17 @@ public class ImageController {
                 log.info(imageIdMap.toString());
                 Long imageId = Long.parseLong(imageIdMap.get("image_id"));
                 log.info("imageId={}", imageId);
+
+                ImageEntity imageEntity = imageRepository.findByImageId(imageId);
+                String fullpath = imageEntity.getImage_path();
+                log.info(fullpath);
+
+                // db에서 이미지 객체 삭제
                 imageRepository.deleteByImageId(imageId);
+
+                // s3에서 이미지 삭제
+                String filename = fullpath.substring(fullpath.lastIndexOf("/")+1);
+                s3Service.delete(filename);
             }
 
 

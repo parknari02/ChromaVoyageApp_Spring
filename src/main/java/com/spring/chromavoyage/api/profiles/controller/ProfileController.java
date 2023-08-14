@@ -8,10 +8,11 @@ import com.spring.chromavoyage.api.profiles.entity.ProfileEntity;
 import com.spring.chromavoyage.api.profiles.repository.ProfileRepository;
 import com.spring.chromavoyage.api.images.service.FileService;
 import com.spring.chromavoyage.api.profiles.service.ProfileService;
-import com.spring.chromavoyage.aws.S3Uploader;
+import com.spring.chromavoyage.aws.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,8 +32,10 @@ public class ProfileController {
     private final ProfileRepository profileRepository;
     @Autowired
     private final ProfileService profileService;
-    private final S3Uploader s3Uploader;
-    
+    private final S3Service s3Service;
+    @Value("${file.dir}")
+    private String defaultPath;
+
 
 //    @Autowired
     private final FileService fileService; //service
@@ -68,7 +71,7 @@ public class ProfileController {
             ProfileEntity profileEntity = profileService.updateProfileImg(user_id, storeImage.getImageUrl());
 
             //S3에 업로드
-            s3Uploader.uploadFiles(file, "static");
+            s3Service.uploadFiles(file, "");
 
 
 //            log.info("---profileInfo---");
@@ -127,6 +130,7 @@ public class ProfileController {
     @DeleteMapping("/profiles")
     public ResponseEntity deleteProfileImg(@RequestBody ProfileDto req) {
         Long user_id = req.getUser_id();
+        ProfileEntity userInfo = profileRepository.findByUserId(user_id);
 
         // 예외 : 필수 파라미터 부재시 - 400:BAD_REQUEST
         if (user_id == null) {
@@ -136,7 +140,17 @@ public class ProfileController {
         // 이후 기본 프로필 사진(우선 검은색 png 파일로 대체)으로 변경
         // 기본 프로필 사진은 고정 경로(임의로 설정)에서 꺼내오기
         try {
+            // db 이미지 파일 삭제
             profileService.deleteProfileImg(user_id);
+
+            // s3 이미지 파일 삭제
+            String fullpath = userInfo.getProfileImg_path();
+            String filename = fullpath.substring(fullpath.lastIndexOf("/")+1);
+            s3Service.delete(filename);
+
+            // db의 filepath를 default 이미지 경로로 변경
+            profileService.updateProfileImg(user_id, defaultPath);
+
             return new ResponseEntity(HttpStatus.NO_CONTENT);
             }
         catch(Exception e) {

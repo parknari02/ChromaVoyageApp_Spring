@@ -15,5 +15,7 @@ import java.util.List;
 public interface ImageRepository extends JpaRepository<ImageEntity, Long> {
 //    public List<ImageEntity> findAllImageEntitiesByColoringLocationIdAndGroupIdAndLocationId(Long coloringLocationId, Long groupId, Long locationId);
     public List<ImageEntity> findAllByColoringLocationId(Long coloringLocationId);
+
+    public ImageEntity findByImageId(Long imageId);
     public void deleteByImageId(Long imageId);
 }

@@ -1,10 +1,15 @@
 package com.spring.chromavoyage.aws;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,7 +21,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-public class S3Uploader {
+public class S3Service {
     private final AmazonS3Client amazonS3Client;
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -59,6 +64,17 @@ public class S3Uploader {
             return Optional.of(convertFile);
         }
         return Optional.empty();
+    }
+
+    public void delete(String filename) {
+        try {
+            amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, filename));
+            System.out.println(String.format("[%s] was deleted", filename));
+        } catch (AmazonServiceException e) {
+            e.printStackTrace();
+        } catch (SdkClientException e) {
+            e.printStackTrace();
+        }
     }
 }
 
