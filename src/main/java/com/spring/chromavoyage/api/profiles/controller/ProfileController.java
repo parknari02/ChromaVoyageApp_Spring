@@ -8,6 +8,7 @@ import com.spring.chromavoyage.api.profiles.entity.ProfileEntity;
 import com.spring.chromavoyage.api.profiles.repository.ProfileRepository;
 import com.spring.chromavoyage.api.images.service.FileService;
 import com.spring.chromavoyage.api.profiles.service.ProfileService;
+import com.spring.chromavoyage.aws.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class ProfileController {
     private final ProfileRepository profileRepository;
     @Autowired
     private final ProfileService profileService;
+    private final S3Uploader s3Uploader;
+    
 
 //    @Autowired
     private final FileService fileService; //service
@@ -61,7 +64,12 @@ public class ProfileController {
 
 
             profileService.updateProfileName(user_id, name);
+            // db에 저장
             ProfileEntity profileEntity = profileService.updateProfileImg(user_id, storeImage.getImageUrl());
+
+            //S3에 업로드
+            s3Uploader.uploadFiles(file, "static");
+
 
 //            log.info("---profileInfo---");
 //            log.info(profileInfo.toString());

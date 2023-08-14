@@ -7,6 +7,7 @@ import com.spring.chromavoyage.api.images.domain.UploadFile;
 import com.spring.chromavoyage.api.images.entity.ImageEntity;
 import com.spring.chromavoyage.api.images.repository.ImageRepository;
 import com.spring.chromavoyage.api.images.service.FileService;
+import com.spring.chromavoyage.aws.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,8 @@ public class ImageController {
     private final ImageRepository imageRepository;
     @Autowired
     private final FileService fileService; //service
-    private final AmazonS3Client amazonS3Client;
+    private final S3Uploader s3Uploader;
+
 
     @PostMapping("/images/{coloring_location_id}")
     public List<ImageEntity> saveImages (@RequestParam Long group_id,
@@ -54,6 +56,15 @@ public class ImageController {
         // 업로드 된 이미지 가져와서 저장 + 저장 후 (원래 이름, 서버용 이름) 객체 리스트 반환
         List<UploadFile> storeImageFiles = fileService.storeFiles(file);
         List<ImageEntity> imageEntities = new ArrayList<>();
+
+        // S3에 업로드
+        try {
+            for (MultipartFile multipartFile : file) {
+                s3Uploader.uploadFiles(multipartFile, "static");
+            }
+        } catch (Exception e) { }
+//        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+
         // 데이터베이스에 저장
         for (UploadFile storeImageFile : storeImageFiles) {
 

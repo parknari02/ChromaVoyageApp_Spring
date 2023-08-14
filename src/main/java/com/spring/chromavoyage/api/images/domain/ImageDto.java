@@ -15,7 +15,7 @@ public class ImageDto {
     public ImageEntity toEntity() {
         return ImageEntity.builder()
                 .image_path(imageFile.getImageUrl())
-                .file_name(imageFile.getStoreFileName())
+                .file_name(imageFile.getUploadFileName())
                 .group_id(groupId)
                 .location_id(locationId)
                 .coloring_location_id(coloringLocationId)
