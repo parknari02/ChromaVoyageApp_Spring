@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,5 +21,13 @@ public class PlaceDTO {
     private String address;
     private double latitude;
     private double longitude;
+
+    private String placeDate;
+
+    private LocalDateTime createdDate;
+
+    private String startTime;
+
+    private String endTime;
 
 }

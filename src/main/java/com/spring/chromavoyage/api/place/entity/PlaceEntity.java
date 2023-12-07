@@ -5,6 +5,8 @@ import com.spring.chromavoyage.api.place.dto.PlaceDTO;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+
 @IdClass(PlacePk.class)
 @Entity
 @Data
@@ -28,9 +30,21 @@ public class PlaceEntity {
     @Column(name = "location_id")
     private String locationId;
 
+    @Column(name = "created_date", nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdDate;
+
+    @Column(name = "place_date")
+    private String placeDate;
+
 
     @Column(name = "place_name")
     private String placeName;
+
+    @Column(name = "start_time")
+    private String startTime;
+
+    @Column(name = "end_time")
+    private String endTime;
 
     @Column(name = "address")
     private String address;

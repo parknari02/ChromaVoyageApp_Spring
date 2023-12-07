@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,6 +25,10 @@ public class PlaceService {
         placeEntity.setAddress(placeDTO.getAddress());
         placeEntity.setLatitude(placeDTO.getLatitude());
         placeEntity.setLongitude(placeDTO.getLongitude());
+        placeEntity.setPlaceDate(placeDTO.getPlaceDate());
+        placeEntity.setCreatedDate(LocalDateTime.now());
+        placeEntity.setStartTime(placeDTO.getStartTime());
+        placeEntity.setEndTime(placeDTO.getEndTime());
         placeRepository.save(placeEntity);
     }
 

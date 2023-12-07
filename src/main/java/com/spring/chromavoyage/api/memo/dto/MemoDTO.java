@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -19,6 +21,10 @@ public class MemoDTO {
     private String memoContent;
     private String startTime;
     private String endTime;
+
+    private String memoDate;
+
+    private LocalDateTime createdDate;
 
 }
 

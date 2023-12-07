@@ -16,7 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/locations")
@@ -45,37 +47,52 @@ public class LocationController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity addLocations(@RequestBody AddLocationsRequest request, @RequestParam("group_id") Long groupId){
-        //location_name => location_id로 찾기
-        List<Long> locationId = new ArrayList<>();
+    public ResponseEntity<List<Map<String, Long>>> addLocations(@RequestBody AddLocationsRequest request, @RequestParam("group_id") Long groupId){
+        List<Map<String, Long>> locationIdsList = new ArrayList<>();
         List<GroupMember> groupMembers = groupMemberRepository.findGroupMemberByGroupId(groupId);
 
         for(String locationName : request.getLocationName()){
             Location location = locationRepository.findLocationByLocationName(locationName);
-            locationId.add(location.getLocationId());
-            ColoringLocation coloringLocation = new ColoringLocation();
-            coloringLocation.setLocationId(location.getLocationId());
-            coloringLocation.setStartDate(request.getStartDate());
-            coloringLocation.setEndDate(request.getEndDate());
-            coloringLocation.setGroupId(groupId);
-            coloringLocationRepository.save(coloringLocation);
+            if(location != null) { // Check if location is found
 
-            for(GroupMember groupMember : groupMembers){
-                Long userId = groupMember.getUserId();
-                List<UserColoring> userColorings = userColoringRepository.findUserColoringByUserId(userId);
-                List<Long> locationIds = new ArrayList<>();
-                for(UserColoring userColoring : userColorings){
-                    locationIds.add(userColoring.getLocationId());
-                }
-                if(!locationIds.contains(location.getLocationId())){
-                    UserColoring userColoring = new UserColoring();
-                    userColoring.setLocationId(location.getLocationId());
-                    userColoring.setUserId(userId);
-                    userColoringRepository.save(userColoring);
+                ColoringLocation coloringLocation = new ColoringLocation();
+                coloringLocation.setLocationId(location.getLocationId());
+                coloringLocation.setStartDate(request.getStartDate());
+                coloringLocation.setEndDate(request.getEndDate());
+                coloringLocation.setGroupId(groupId);
+
+                // Save the entity and get the saved entity
+                coloringLocation = coloringLocationRepository.save(coloringLocation);
+
+                // Get the coloringLocationId from the saved entity
+                Long coloringLocationId = coloringLocation.getColoringLocationId();
+
+                for(GroupMember groupMember : groupMembers){
+                    Long userId = groupMember.getUserId();
+                    List<UserColoring> userColorings = userColoringRepository.findUserColoringByUserId(userId);
+                    List<Long> locationIds = new ArrayList<>();
+                    for(UserColoring userColoring : userColorings){
+                        locationIds.add(userColoring.getLocationId());
+                    }
+                    if(!locationIds.contains(location.getLocationId())){
+                        UserColoring userColoring = new UserColoring();
+                        userColoring.setLocationId(location.getLocationId());
+                        userColoring.setUserId(userId);
+                        userColoringRepository.save(userColoring);
+                    }
                 }
 
+                // Create a map to store coloringLocationId and locationId
+                Map<String, Long> locationIdsMap = new HashMap<>();
+                locationIdsMap.put("coloringLocationId", coloringLocationId);
+                locationIdsMap.put("locationId", location.getLocationId());
+                locationIdsList.add(locationIdsMap);
             }
         }
-        return ResponseEntity.ok().body(request);
+
+        // Return the list of coloringLocationIds and locationIds to the client
+        return ResponseEntity.ok().body(locationIdsList);
     }
+
+
 }

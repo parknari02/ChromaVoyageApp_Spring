@@ -3,6 +3,8 @@ import javax.persistence.*;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Table(name = "memolist")
@@ -23,6 +25,12 @@ public class MemoEntity {
 
     @Column(name = "memo_content", length = 100, nullable = false)
     private String memoContent;
+
+    @Column(name = "created_date", nullable = false, insertable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdDate;
+
+    @Column(name = "memo_date")
+    private String memoDate;
 
     @Column(name = "start_time")
     private String startTime;

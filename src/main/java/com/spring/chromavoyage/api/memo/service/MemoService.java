@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,6 +27,8 @@ public class MemoService {
         memoEntity.setLocationId(memoDTO.getLocationId());
         memoEntity.setStartTime(memoDTO.getStartTime());
         memoEntity.setEndTime(memoDTO.getEndTime());
+        memoEntity.setMemoDate(memoDTO.getMemoDate());
+        memoEntity.setCreatedDate(LocalDateTime.now());
         memoRepository.save(memoEntity);
     }
 
