@@ -25,8 +25,6 @@ public class MemoService {
         memoEntity.setColoringLocationId((memoDTO.getColoringLocationId()));
         memoEntity.setGroupId(memoDTO.getGroupId());
         memoEntity.setLocationId(memoDTO.getLocationId());
-        memoEntity.setStartTime(memoDTO.getStartTime());
-        memoEntity.setEndTime(memoDTO.getEndTime());
         memoEntity.setMemoDate(memoDTO.getMemoDate());
         memoEntity.setCreatedDate(LocalDateTime.now());
         memoRepository.save(memoEntity);

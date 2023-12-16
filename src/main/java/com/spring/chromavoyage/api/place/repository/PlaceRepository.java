@@ -14,6 +14,8 @@ public interface PlaceRepository extends JpaRepository<PlaceEntity, Integer> {
 
     List<PlaceEntity> findPlaceEntityByColoringLocationId(Long coloringLocationId);
 
+
+
     @Transactional
     void deleteByPlaceListId(Long placeListId);
 }

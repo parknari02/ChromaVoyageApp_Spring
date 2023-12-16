@@ -41,6 +41,8 @@ public class PlaceService {
 
     }
 
+
+
     public void deleteByPlaceName(Long coloringLocationId, String placeName){
         List<PlaceEntity> placelist = placeRepository.findPlaceEntityByColoringLocationId(coloringLocationId);
         for(PlaceEntity place:placelist){

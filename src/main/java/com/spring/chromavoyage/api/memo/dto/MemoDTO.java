@@ -19,8 +19,6 @@ public class MemoDTO {
     private String locationId;
     private String memoListId;
     private String memoContent;
-    private String startTime;
-    private String endTime;
 
     private String memoDate;
 
